@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<!--
+  German type UB I submarine for FlightGear.
+
+  Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+  This file is licensed under the GPL license version 2 or later.
+-->
+<PropertyList>
+
+ <!--
+   x/y/z == back/left/up
+   Coordinate system origin at the 3d model origin, i.e. at the FDM origin.
+ -->
+ 
+ <fx>
+
+  <!-- ========================================================================
+    Engine 1. (Diesel main engine)
+  -->
+  <crank>
+   <name>engstart1</name>
+   <path>Sounds/engstart.wav</path>
+   <condition>
+    <property>engines/engine[0]/cranking</property>
+   </condition>
+   <position>
+    <!-- x/y/z == back/left/up -->
+    <x> 19.00 </x>
+    <y>  0.00 </y>
+    <z>  0.00 </z>
+   </position>
+   <volume>
+    <offset>0.1</offset>
+    <max>0.01</max>
+   </volume>
+  </crank>
+
+  <crank>
+   <name>crank1</name>
+   <mode>looped</mode>
+   <path>Sounds/cranking.wav</path>
+   <condition>
+    <and>
+     <property>engines/engine[0]/cranking</property>
+     <not>
+      <property>engines/engine[0]/running</property>
+     </not>
+    </and>
+   </condition>
+   <position>
+    <!-- x/y/z == back/left/up -->
+    <x> 19.00 </x>
+    <y>  0.00 </y>
+    <z>  0.00 </z>
+   </position>
+   <volume>
+    <offset>-0.5</offset>
+   </volume>
+   <pitch>
+    <property>engines/engine[0]/cranking</property>
+    <factor>1.0</factor>
+   </pitch>
+  </crank>
+
+  <crank>
+   <name>cough1</name>
+   <path>Sounds/coughing.wav</path>
+   <condition>
+    <property>engines/engine[0]/running</property>
+   </condition>
+   <position>
+    <!-- x/y/z == back/left/up -->
+    <x> 19.00 </x>
+    <y>  0.00 </y>
+    <z>  0.00 </z>
+   </position>
+   <volume>
+    <offset>0.3</offset>
+   </volume>
+  </crank>
+
+  <engine>
+   <name>engine1</name>
+   <mode>looped</mode>
+   <path>Aircraft/p51d/Sounds/p51d_rpm1.wav</path>
+   <condition>
+    <property>engines/engine[0]/running</property>
+   </condition>
+   <position>
+    <!-- x/y/z == back/left/up -->
+    <x> 19.00 </x>
+    <y>  0.00 </y>
+    <z>  0.00 </z>
+   </position>
+   <volume>
+    <property>engines/engine[0]/mp-inhg</property>
+    <factor>0.025</factor>
+    <min>1.0</min>
+    <max>3.0</max>
+    <offset>0.0</offset>
+   </volume>
+   <volume>
+    <property>/engines/engine[0]/rpm</property>
+    <factor>0.0004</factor>
+    <min>0.2</min>
+    <max>1.0</max>
+    <offset>0.0</offset>
+   </volume>
+   <pitch>
+    <property>engines/engine[0]/rpm</property>
+    <factor>0.0004</factor>
+    <min>0.1</min>
+    <max>1.0</max>
+    <offset>0.0</offset>
+   </pitch>
+  </engine>
+
+  <engine>
+   <name>enginerun1</name>
+   <mode>looped</mode>
+   <path>Sounds/wasp.wav</path>
+   <condition>
+    <property>/engines/engine[0]/running</property>
+    <greater-than>
+    <property>/engines/engine[0]/rpm</property>
+    <value>100</value>
+    </greater-than>
+   </condition>
+   <position>
+    <!-- x/y/z == back/left/up -->
+    <x> 19.00 </x>
+    <y>  0.00 </y>
+    <z>  0.00 </z>
+   </position>
+   <volume>
+    <property>/engines/engine[0]/mp-inhg</property>
+    <offset>0.0</offset>
+    <factor>0.025</factor>  
+    <min>1.0</min>
+    <max>3.0</max>
+   </volume>
+   <volume>
+    <property>/engines/engine[0]/rpm</property>
+    <factor>0.0004</factor>
+    <min>0.0</min>
+    <max>1.00</max>
+    <offset>0.0</offset>
+   </volume>
+   <pitch>
+    <property>/engines/engine[0]/rpm</property>
+    <factor>0.0004</factor>
+    <min>0.0</min>
+    <max>1.0</max>
+   </pitch>
+  </engine>
+
+ </fx>
+
+</PropertyList>

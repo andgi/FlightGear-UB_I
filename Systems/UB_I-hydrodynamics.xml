@@ -1,0 +1,1241 @@
+<?xml version="1.0"?>
+<!--
+
+  German type UB I submarine "flight" model for JSBSim.
+
+    Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  
+-->
+<system name="UB I hydrodynamics">
+
+ <!-- Model parameters -->
+
+ <!-- HRP location -->
+ <property value="551.1811">metrics/hydro-rp-x-in</property>
+ <property value="0.0">metrics/hydro-rp-y-in</property>
+ <property value="39.370079">metrics/hydro-rp-z-in</property>
+
+ <property value="10.50">metrics/hydro-beam-ft</property>
+ <property value="91.50">metrics/hydro-length-ft</property>
+
+ 
+ <documentation>
+  The DATCOM generated coefficients are defined with the displacement
+  volume as the basis for the reference area and lengths.
+ </documentation>
+ <property value="4979.4">metrics/hydro-vref-ft3</property>
+ <property value="291.60">metrics/hydro-sref-ft2</property>
+ <property value="17.076">metrics/hydro-lref-ft</property>
+
+ <documentation>
+  The hull beam is used as the reference length and to define both
+  reference area and volume.
+ </documentation>
+ <property value="10.50">hydro/hull-beam-ft</property>
+ <property value="110.25">hydro/hull-beam-ft2</property>
+ <property value="1157.6">hydro/hull-beam-ft3</property>
+ <property value="12155.1">hydro/hull-beam-ft4</property>
+
+ <property value="91.50">hydro/hull-length-ft</property>
+
+ <!-- Tweak factors. :) -->
+ <property value="0.75">hydro/drag-tweak-factor</property>
+ <property value="1.0">hydro/side-tweak-factor</property>
+ <property value="1.0">hydro/lift-tweak-factor</property>
+ <property value="1.0">hydro/pitch-tweak-factor</property>
+ <property value="1.0">hydro/yaw-tweak-factor</property>
+ <property value="1.0">hydro/yaw-stability-tweak-factor</property>
+
+ <!-- The bx and by channels of the body frame are not used. -->
+ <property value="0.0">hydro/fbx-lbs</property>
+ <property value="0.0">hydro/fby-lbs</property>
+
+ <channel name="Common coefficients">
+
+  <fcs_function name="hydro/speed-length-ratio">
+   <function>
+    <quotient>
+     <product> <!-- Speed in knots. -->
+      <value>0.5924838</value>
+      <property>hydro/vbx-fps</property>
+     </product>
+     <pow>
+      <property>hydro/hull-length-ft</property>
+      <value>0.5</value>
+     </pow>
+    </quotient>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/Frode-number">
+   <function>
+    <quotient>
+     <property>hydro/vbx-fps</property>
+     <pow>
+      <product>
+       <property>hydro/environment/gravity-ft_sec2</property>
+       <property>hydro/hull-length-ft</property>
+      </product>
+      <value>0.5</value>
+     </pow>
+    </quotient>
+   </function>
+  </fcs_function>
+
+ </channel>
+
+ <channel name="Displacement wave making">
+
+  <fcs_function name="hydro/transverse-wave/wave-length-ft">
+   <description>The wave length of the transverse wave</description>
+   <function>
+    <product>
+     <quotient>
+      <value>6.2831853</value>
+      <property>hydro/environment/gravity-ft_sec2</property>
+     </quotient>
+     <property>hydro/vbx-fps</property>
+     <property>hydro/vbx-fps</property>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/transverse-wave/wave-amplitude-ft">
+   <description>The amplitude of the transverse wave. Guessed.</description>
+   <function>
+    <product>
+     <value>0.25</value>
+     <table>
+      <independentVar lookup="row">hydro/speed-length-ratio</independentVar>
+      <tableData>
+        0.0  1.0
+        1.3  1.0
+        2.0  0.6
+        2.5  0.0
+      </tableData>
+     </table>
+     <pow>
+      <quotient>
+       <product>
+        <value>2.0</value>
+        <property>hydro/hull-drag-lbs</property>
+        <property>hydro/transverse-wave/wave-length-ft</property>
+       </product>
+       <product>
+        <value>3.1415927</value>
+        <property>hydro/environment/rho-slug_ft3</property>
+        <property>hydro/environment/gravity-ft_sec2</property>
+        <max>
+         <value>0.0001</value>
+         <property>hydro/vbx-fps</property>
+        </max>
+       </product>
+      </quotient>
+      <value>0.5</value>
+     </pow>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/transverse-wave/squat-ft">
+   <description>
+    The average water level change by the transverse wave
+   </description>
+   <function>
+    <!-- The integral of the sine wave evaluated at the stern. -->
+    <quotient>
+     <product>
+      <value>0.15915494</value>
+      <property>hydro/transverse-wave/wave-amplitude-ft</property>
+      <property>hydro/transverse-wave/wave-length-ft</property>
+      <sin>
+       <quotient>
+        <product>
+         <value>6.2831853</value>
+         <property>hydro/hull-length-ft</property>
+        </product>
+        <property>hydro/transverse-wave/wave-length-ft</property>
+       </quotient>
+      </sin>
+     </product>
+     <property>hydro/hull-length-ft</property>
+    </quotient>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/transverse-wave/pitch-trim-change-deg">
+   <description>
+    The pitch trim change due to the transverse wave. Guessed.
+   </description>
+   <!-- deltaTrim = atan2(water line at bow - water line at stern, LWL) -->
+   <function>
+    <product>
+     <value>57.29578</value>
+     <table>
+      <independentVar lookup="row">hydro/speed-length-ratio</independentVar>
+      <tableData>
+        0.0  0.0
+        1.2  0.0
+        1.3  1.0
+      </tableData>
+     </table>
+     <atan2>
+      <difference>
+       <property>hydro/transverse-wave/wave-amplitude-ft</property>
+       <product>
+        <property>hydro/transverse-wave/wave-amplitude-ft</property>
+        <sin>
+         <quotient>
+          <product>
+           <value>6.2831853</value>
+           <property>hydro/hull-length-ft</property>
+          </product>
+          <property>hydro/transverse-wave/wave-length-ft</property>
+         </quotient>
+        </sin>
+       </product>
+      </difference>
+      <property>hydro/hull-length-ft</property>
+     </atan2>
+    </product>
+   </function>
+  </fcs_function>
+ </channel>
+
+ <channel name="Effective hull position and orientation">
+
+  <fcs_function name="hydro/hull/height-agl-ft">
+   <description>
+    The hull height with waves and squat due to the transverse wave applied.
+   </description>
+   <function>
+    <sum>
+     <property>hydro/height-agl-ft</property>
+     <product>
+      <value>-1.0</value>
+      <max>
+       <value>-100.0</value>
+       <min>
+        <property>hydro/environment/wave/level-at-hrp-ft</property>
+        <value>100.0</value>
+       </min>
+      </max>
+     </product>
+     <max>
+      <value>-0.0</value>
+      <min>
+       <property>hydro/transverse-wave/squat-ft</property>
+       <value>0.0</value>
+      </min>
+     </max>
+    </sum>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/hull/pitch-deg">
+   <description>
+    The hull pitch with the trim change due to waves and 
+    the displacement wave applied.
+   </description>
+   <function>
+    <sum>
+     <property>hydro/pitch-deg</property>
+     <product>
+      <value>-1.0</value>
+      <max>
+       <value>-30.0</value>
+       <min>
+        <property>hydro/orientation/wave-pitch-trim-change-deg</property>
+        <value>30.0</value>
+       </min>
+      </max>
+     </product>
+     <product>
+      <value>-1.0</value>
+      <max>
+       <value>-30.0</value>
+       <min>
+        <property>hydro/transverse-wave/pitch-trim-change-deg</property>
+        <value>30.0</value>
+       </min>
+      </max>
+     </product>
+    </sum>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/hull/roll-deg">
+   <description>
+    The hull roll with the trim change due to waves applied.
+   </description>
+   <function>
+    <sum>
+     <property>hydro/roll-deg</property>
+     <product>
+      <value>1.0</value>
+      <max>
+       <value>-80.0</value>
+       <min>
+        <property>hydro/orientation/wave-roll-trim-change-deg</property>
+        <value>80.0</value>
+       </min>
+      </max>
+     </product>
+    </sum>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/rudder/beta-rad">
+   <description>
+    The effective beta angle of the rudder.
+   </description>
+   <function>
+    <sum>
+     <property>hydro/beta-rad</property>
+     <property>fcs/rudder/pos-rad</property>
+    </sum>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/diving-rudder/alpha-rad">
+   <description>
+    The effective alpha angle of the diving rudder.
+   </description>
+   <function>
+    <sum>
+     <property>hydro/alpha-rad</property>
+     <property>fcs/diving-rudder/pos-rad</property>
+    </sum>
+   </function>
+  </fcs_function>
+
+ </channel>
+
+ <channel name="Drag">
+
+  <fcs_function name="hydro/hull-drag-lbs">
+   <function>
+    <description>
+      Drag due to displacement of hull.
+      Estimated with DATCOM.
+    </description>
+    <product>
+     <property>hydro/qbar-psf</property>
+     <property>metrics/hydro-sref-ft2</property>
+     <property>hydro/drag-tweak-factor</property>
+     <sum>
+      <value>1.0</value>
+      <product>  <!-- Increase drag with beta. -->
+       <value>75.0</value>
+       <abs><sin><property>hydro/beta-rad</property></sin></abs>
+      </product>
+     </sum>
+     <table>
+      <independentVar lookup="row">hydro/alpha-rad</independentVar>
+      <tableData>
+        -2.269         .8193    
+        -1.396         1.854    
+        -.6981         .5818    
+        -.3491         .1200    
+        -.1745         .4003E-01
+        -.1396         .3337E-01
+        -.1047         .2896E-01
+        -.6981E-01     .2639E-01
+        -.3491E-01     .2519E-01
+        .000         .2489E-01
+        .3491E-01     .2519E-01
+        .6981E-01     .2639E-01
+        .1047         .2896E-01
+        .1396         .3337E-01
+        .1745         .4003E-01
+        .3491         .1200    
+        .6981         .5818    
+        1.396         1.854    
+        2.269         .8193    
+        3.142        -.2489E-01
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/hydroplane-drag-lbs">
+   <function>
+    <description>
+     Drag due to the hydroplanes. Estimated using DATCOM.
+    </description>
+    <product>
+     <abs><property>hydro/qbar-u-psf</property></abs>
+     <property>metrics/hydro-sref-ft2</property>
+     <property>hydro/drag-tweak-factor</property>
+     <table>
+      <!-- The hydroplanes are out of the water when running at the surface. -->
+      <independentVar lookup="row">hydro/hull/pitch-deg</independentVar>
+      <independentVar lookup="column">hydro/hull/height-agl-ft</independentVar>
+      <tableData>
+            -20.0   -15.0    -7.0    -4.0    -1.0     2.0
+       -20    1.0     1.0     1.0     1.0     1.0     1.0
+       -10    1.0     1.0     1.0     1.0     1.0     1.0
+       -5     1.0     1.0     1.0     1.0     1.0     0.0
+        0     1.0     1.0     1.0     1.0     0.0     0.0
+        5     1.0     1.0     1.0     0.0     0.0     0.0
+        10    1.0     1.0     0.0     0.0     0.0     0.0
+        20    1.0     0.0     0.0     0.0     0.0     0.0
+      </tableData>
+     </table>
+     <table>
+      <independentVar lookup="row">hydro/alpha-rad</independentVar>
+      <tableData>
+        -2.269        .005
+        -1.396        .002
+        -.6981        .049
+        -.3491        .025
+        -.1745        .008
+        -.1396        .006
+        -.1047        .004
+        -.6981E-01    .003
+        -.3491E-01    .002
+        .000          .001
+        .3491E-01     .001
+        .6981E-01     .000
+        .1047         .000
+        .1396         .001
+        .1745         .001
+        .3491         .008
+        .6981         .039
+        1.396         .465
+        2.269         .372
+        3.142         .034
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/fin-drag-lbs">
+   <function>
+    <description>
+      Drag due to the vertical fin.
+      Estimated with DATCOM.
+    </description>
+    <product>
+     <value>0.5</value> <!-- One fin only. -->
+     <property>hydro/qbar-psf</property>
+     <property>metrics/hydro-sref-ft2</property>
+     <property>hydro/drag-tweak-factor</property>
+     <table>
+      <independentVar lookup="row">hydro/beta-rad</independentVar>
+      <tableData>
+        -2.269         .013
+        -1.396         .018
+        -.6981         .151
+        -.3491         .054
+        -.1745         .012
+        -.1396         .008
+        -.1047         .005
+        -.6981E-01     .003
+        -.3491E-01     .002
+        .000           .002
+        .3491E-01      .002
+        .6981E-01      .003
+        .1047          .005
+        .1396          .008
+        .1745          .012
+        .3491          .054
+        .6981          .105
+        1.396          .005
+        2.269          .005
+        3.142          .002
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <summer name="hydro/fdrag-lbs">
+   <input>hydro/hull-drag-lbs</input>
+   <input>hydro/hydroplane-drag-lbs</input>
+   <input>hydro/fin-drag-lbs</input>
+  </summer>
+
+ </channel>
+
+ <channel name="Side">
+
+  <fcs_function name="hydro/hull-side-lbs">
+   <function>
+    <description>Side force due to hull. Estimated with DATCOM.</description>
+    <product>
+     <value>1.0</value>
+     <abs><property>hydro/qbar-u-psf</property></abs>
+     <property>metrics/hydro-sref-ft2</property>
+     <property>hydro/side-tweak-factor</property>
+     <sin><property>hydro/beta-rad</property></sin>
+     <table>
+      <independentVar lookup="row">hydro/alpha-rad</independentVar>
+      <tableData>
+        -2.269        -.2111    
+        -1.396         .7972    
+        -.6981        -.6093    
+        -.3491        -1.065    
+        -.1745        -.7899    
+        -.1396        -.6877    
+        -.1047        -.5704    
+        -.6981E-01    -.4467    
+        -.3491E-01    -.3180    
+        .000        -.2526    
+        .3491E-01    -.3180    
+        .6981E-01    -.4467    
+        .1047        -.5704    
+        .1396        -.6877    
+        .1745        -.7899    
+        .3491        -1.065    
+        .6981        -.6093    
+        1.396         .7972    
+        2.269         .1868    
+        3.142        -1.793    
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/fin-side-lbs">
+   <function>
+    <description>
+      Side force due to the vertical fin.
+      Estimated with DATCOM.
+    </description>
+    <product>
+     <value>0.5</value> <!-- One fin only. -->
+     <property>hydro/qbar-psf</property>
+     <property>metrics/hydro-sref-ft2</property>
+     <property>hydro/side-tweak-factor</property>
+     <table>
+      <independentVar lookup="row">hydro/beta-rad</independentVar>
+      <tableData>
+        -2.269         .096
+        -1.396        -.112
+        -.6981        -.341
+        -.3491        -.203
+        -.1745        -.091
+        -.1396        -.070
+        -.1047        -.050
+        -.6981E-01    -.032
+        -.3491E-01    -.015
+        .000           .000
+        .3491E-01      .015
+        .6981E-01      .032
+        .1047          .050
+        .1396          .070
+        .1745          .091
+        .3491          .203
+        .6981          .284
+        1.396          .055
+        2.269          .053
+        3.142          .000
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <summer name="hydro/fside-lbs">
+   <input>hydro/hull-side-lbs</input>
+   <input>hydro/fin-side-lbs</input>
+  </summer>
+
+ </channel>
+
+ <channel name="Lift / Body-Z (up)">
+
+  <fcs_function name="hydro/buoyancy-lbs">
+   <documentation>
+    Lift due to buoyancy.
+    This data was computed in Gerris using the 3d model.
+    In Blender the total volume of the pressure hull is
+    137.5 m^3 including the volume of the forward trim tank.
+   </documentation>
+   <function>
+    <product>
+     <value>1.0</value>
+     <property>hydro/environment/rho-slug_ft3</property>
+     <property>hydro/environment/gravity-ft_sec2</property>
+     <table>
+      <independentVar lookup="row">hydro/hull/pitch-deg</independentVar>
+      <independentVar lookup="column">hydro/hull/roll-deg</independentVar>
+      <independentVar lookup="table">hydro/hull/height-agl-ft</independentVar>
+      <tableData breakPoint="-15.0">
+  -15     -10     -5       0       5     10      15
+-20 4300 4300 4300 4300 4300 4300 4300
+-10 4300 4300 4300 4300 4300 4300 4300
+-5  4300 4300 4300 4300 4300 4300 4300
+0   4300 4300 4300 4300 4300 4300 4300
+5   4300 4300 4300 4300 4300 4300 4300
+10  4300 4300 4300 4300 4300 4300 4300
+20  4300 4300 4300 4300 4300 4300 4300 
+      </tableData>
+<!--
+-20 3958.32 3959.9 3952.58 3955.42 3952.6 3959.94 3958.43
+-10 3834.14 3840.38 3838.1 3849.51 3837.87 3840.83 3833.96
+-5 3827.14 3845.94 3844.72 3845.92 3844.34 3846.06 3827.3
+0 3865.45 3884.64 3882.56 3880.93 3882.62 3885.2 3865.63
+5 3884.7 3899.78 3899.76 3902.69 3899.82 3899.89 3884.91
+10 3941.57 3965.55 3971.43 3968.74 3971.47 3965.68 3941.73
+20 4130.99 4310.67 4261.22 4136.17 4261.22 4319.67 4177.78
+-->
+      <tableData breakPoint="-7.0">
+   -15     -10     -5       0       5     10      15
+-20 3924.19 3913.97 3907.51 3910.27 3907.35 3914.09 3924.37
+-10 4138.04 4142.07 4242.33 4267.77 4242.17 4142.38 4138.18
+-5 4236.18 4444.43 4288.41 4228.74 4288.52 4444.47 4236.18
+0 4111.85 4156.24 4106.83 4146.41 4106.9 4156.33 4112.16
+5 4277.56 4232.13 4136.05 4255.07 4136.1 4232.15 4278.13
+10 4221.26 4169.12 4311.73 4212.06 4311.69 4169.21 4221.03
+20 3783.86 3773.62 3852.75 3844.47 3852.7 3792.85 3783.77
+      </tableData>
+      <tableData breakPoint="-4.0">
+   -15     -10     -5       0       5     10      15
+-20 3506.54 3521.41 3516.32 3618.12 3516.44 3521.52 3506.7
+-10 4069.99 4316.46 4139.15 4257.6 4139.24 4316.68 4070.15
+-5 4142.92 4315.49 4246.21 4341.61 4246.24 4315.58 4142.97
+0 4137.23 4156.69 4296.86 4298.29 4296.79 4156.78 4137.32
+5 4212.74 4182.57 4180.56 4302.04 4180.42 4182.73 4210.75
+10 3973.64 3972.58 4024.13 4082.53 4024.09 3947.15 3956.35
+20 3430.57 3408.45 3454.78 3504.93 3454.73 3399.95 3430.89
+      </tableData>
+      <tableData breakPoint="-1.0">
+   -15     -10     -5       0       5     10      15
+-20 3045.51 2937.95 3109.95 3062.17 3110.04 2937.64 3045.51
+-10 3588.35 3651.25 3568.19 3579.36 3568.24 3651.57 3588.44
+-5 3901.04 3948.1 3977.51 3928.3 3976.44 3945.89 3901
+0 4219.72 4122.67 4187.18 4218.03 4177.5 4133.09 4234.69
+5 3873.18 3790.95 3763.72 3837.35 3959.42 3781.71 3817.8
+10 3418.73 3413.6 3429.62 3389.01 3428.77 3518.36 3412.49
+20 3154.63 3354.09 2866.62 2902.94 2866.67 3354.11 3154.77
+      </tableData>
+      <tableData breakPoint="2.0">
+   -15     -10     -5       0       5     10      15
+-20 2597.15 2746.11 2308.82 2361.3 2308.84 2746.14 2597.19
+-10 3014.46 3247.71 2670.44 2696.32 2670.58 3247.62 3014.32
+-5 2949.46 3061.36 2849.11 2950.68 2861.76 3061.06 2934.32
+0 2889.93 2893.79 2845.22 2926.54 2850.22 2801.92 2847.01
+5 2915.85 2877.36 2737.75 2777.28 2730.74 2877.54 2916.01
+10 2896.3 3117.39 2525.3 2571.5 2525.25 3117.43 2896.39
+20 2544.98 2686.56 2277.79 2328.49 2277.79 2686.56 2544.98
+      </tableData>
+      <tableData breakPoint="9.0">
+            -15      -10      -5        0        5        10       15
+       -20  0.0      0.0      0.0      0.0      0.0      0.0      0.0
+       -10  0.0      0.0      0.0      0.0      0.0      0.0      0.0
+       -5   0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        0   0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        5   0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        10  0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        20  0.0      0.0      0.0      0.0      0.0      0.0      0.0
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/hull-lift-lbs">
+   <function>
+    <description>
+     Lift due to alpha. Estimated using DATCOM.
+    </description>
+    <product>
+     <abs><property>hydro/qbar-u-psf</property></abs>
+     <property>metrics/hydro-sref-ft2</property>
+     <property>hydro/lift-tweak-factor</property>
+     <table>
+      <independentVar lookup="row">hydro/alpha-rad</independentVar>
+      <tableData>
+        -2.269         .7009    
+        -1.396        -.3261    
+        -.6981        -.6706    
+        -.3491        -.2655    
+        -.1745        -.8801E-01
+        -.1396        -.6202E-01
+        -.1047        -.4000E-01
+        -.6981E-01    -.2220E-01
+        -.3491E-01    -.8818E-02
+        .000          .000    
+        .3491E-01     .8818E-02
+        .6981E-01     .2220E-01
+        .1047         .4000E-01
+        .1396         .6202E-01
+        .1745         .8801E-01
+        .3491         .2655    
+        .6981         .6706    
+        1.396         .3261    
+        2.269        -.7009    
+        3.142        -.3759E-08
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/hydroplane-lift-lbs">
+   <function>
+    <description>
+     Lift due to alpha. Estimated using DATCOM.
+    </description>
+    <product>
+     <abs><property>hydro/qbar-u-psf</property></abs>
+     <property>metrics/hydro-sref-ft2</property>
+     <property>hydro/lift-tweak-factor</property>
+     <table>
+      <!-- The hydroplanes are out of the water when running at the surface. -->
+      <independentVar lookup="row">hydro/hull/pitch-deg</independentVar>
+      <independentVar lookup="column">hydro/hull/height-agl-ft</independentVar>
+      <tableData>
+            -20.0   -15.0    -7.0    -4.0    -1.0     1.0
+       -20    1.0     1.0     1.0     1.0     1.0     1.0
+       -10    1.0     1.0     1.0     1.0     1.0     1.0
+       -5     1.0     1.0     1.0     1.0     1.0     1.0
+        0     1.0     1.0     1.0     1.0     0.0     0.0
+        5     1.0     1.0     1.0     0.0     0.0     0.0
+        10    1.0     1.0     0.0     0.0     0.0     0.0
+        20    1.0     0.0     0.0     0.0     0.0     0.0
+      </tableData>
+     </table>
+     <table>
+      <independentVar lookup="row">hydro/alpha-rad</independentVar>
+      <tableData>
+        -2.269         .025
+        -1.396        -.013
+        -.6981        -.078
+        -.3491        -.055
+        -.1745        -.031
+        -.1396        -.026
+        -.1047        -.021
+        -.6981E-01    -.016
+        -.3491E-01    -.012
+        .000          -.008
+        .3491E-01     -.004
+        .6981E-01     -.001
+        .1047          .001
+        .1396          .004 
+        .1745          .008
+        .3491          .031
+        .6981          .069
+        1.396          .239
+        2.269         -.214
+        3.142          .065
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/damping-lift-lbs">
+   <function>
+    <product>
+     <value>1.0</value>
+     <value>2000.0</value> <!-- Guess -->
+     <property>velocities/v-down-fps</property>
+    </product>
+   </function>
+  </fcs_function>
+
+  <summer name="hydro/fbz-lbs">
+   <input>hydro/buoyancy-lbs</input>
+   <input>hydro/hull-lift-lbs</input>
+   <input>hydro/hydroplane-lift-lbs</input>
+   <input>hydro/damping-lift-lbs</input>
+  </summer>
+
+ </channel>
+
+ <channel name="Yaw">
+
+  <fcs_function name="hydro/hull-yaw-moment-lbsft">
+   <function>
+    <description>
+      Yaw moment due to hull (per radian beta). Estimated with DATCOM.
+    </description>
+    <product>
+     <value>-0.5</value> <!-- FIXME? Does beta have the right sign? -->
+     <property>hydro/yaw-stability-tweak-factor</property>
+     <abs><property>hydro/qbar-u-psf</property></abs>
+     <property>metrics/hydro-vref-ft3</property>
+     <sin><property>hydro/beta-rad</property></sin>
+     <table>
+      <independentVar lookup="row">hydro/alpha-rad</independentVar>
+      <tableData>
+        -2.269        -1.357    
+        -1.396         .5464    
+        -.6981        -.3181    
+        -.3491        -1.061    
+        -.1745        -1.317    
+        -.1396        -1.344    
+        -.1047        -1.359    
+        -.6981E-01    -1.365    
+        -.3491E-01    -1.364    
+         .000         -1.362    
+         .3491E-01    -1.364    
+         .6981E-01    -1.365    
+         .1047        -1.359    
+         .1396        -1.344    
+         .1745        -1.317    
+         .3491        -1.061    
+         .6981        -.3181    
+        1.396          .5464    
+        2.269          .2049    
+        3.142         -.6024    
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/fin-yaw-moment-lbsft">
+   <function>
+    <description>
+      Yaw moment due to the vertical fin. Estimated with DATCOM.
+    </description>
+    <product>
+     <value>-0.5</value> <!-- One fin only. FIXME: sign? -->
+     <property>hydro/yaw-stability-tweak-factor</property>
+     <property>hydro/qbar-psf</property>
+     <property>metrics/hydro-vref-ft3</property>
+     <table>
+      <independentVar lookup="row">hydro/beta-rad</independentVar>
+      <tableData>
+        -2.269       -.1708
+        -1.396        .6639
+        -.6981        .7654
+        -.3491        .4123
+        -.1745        .1810
+        -.1396        .1391
+        -.1047        .0999
+        -.6981E-01    .0635
+        -.3491E-01    .0301
+         .000         .0000
+         .3491E-01   -.0303
+         .6981E-01   -.0644
+         .1047       -.1022
+         .1396       -.1435
+         .1745       -.1879
+         .3491       -.4399
+         .6981       -.7741
+        1.396        -.6639
+        2.269         .1708
+        3.142         .0000
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/rudder-yaw-moment-lbsft">
+   <function>
+    <description>
+      Yaw moment due to rudder. Estimated using DATCOM.
+      FIXME: Currently the coefficients are from the diving rudder.
+    </description>
+    <product>
+     <value>2.0</value>
+     <abs><property>hydro/qbar-u-psf</property></abs>
+     <property>metrics/hydro-vref-ft3</property>
+     <property>hydro/yaw-tweak-factor</property>
+     <table>
+      <independentVar lookup="row">hydro/rudder/beta-rad</independentVar>
+      <tableData>
+        -2.269        -.0510 
+        -1.396        1.5403
+        -.6981         .2659
+        -.3491         .1540
+        -.1745         .0767
+        -.1396         .0596
+        -.1047         .0433
+        -.6981E-01     .0278
+        -.3491E-01     .0134
+        .000           .000    
+        .3491E-01     -.0134
+        .6981E-01     -.0279
+        .1047         -.0434
+        .1396         -.0599
+        .1745         -.0773
+        .3491         -.1575
+        .6981         -.1714
+        1.396         -.2278
+        2.269          .1786
+        3.142          .000
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/damping-yaw-moment-lbsft">
+   <documentation>
+    Dampen yaw movements while in the water. Guessed.
+   </documentation>
+   <function>
+    <product>
+     <value>0.0</value>
+     <value>-12500.0</value> <!-- Guess -->
+     <property>hydro/yaw-tweak-factor</property>
+     <property>velocities/psidot-rad_sec</property>
+    </product>
+   </function>
+  </fcs_function>
+
+  <summer name="hydro/yaw-moment-lbsft">
+   <input>hydro/hull-yaw-moment-lbsft</input>
+   <input>hydro/fin-yaw-moment-lbsft</input>
+   <input>hydro/rudder-yaw-moment-lbsft</input>
+   <input>hydro/damping-yaw-moment-lbsft</input>
+  </summer>
+
+ </channel>
+
+ <channel name="Pitch">
+
+  <fcs_function name="hydro/buoyancy-pitch-moment-lbsft">
+   <documentation>
+    Pitch moment due to buoyancy.
+    This data was computed in Gerris using the 3d model.
+   </documentation>
+   <function>
+    <product>
+     <value>-1.0</value>  <!-- WHY?! -->
+     <property>hydro/environment/rho-slug_ft3</property>
+     <property>hydro/environment/gravity-ft_sec2</property>
+     <property>hydro/pitch-tweak-factor</property>
+     <table>
+      <independentVar lookup="row">hydro/hull/pitch-deg</independentVar>
+      <independentVar lookup="column">hydro/hull/roll-deg</independentVar>
+      <independentVar lookup="table">hydro/hull/height-agl-ft</independentVar>
+      <tableData breakPoint="-15.0">
+   -15     -10     -5       0       5      10      15
+-20 2240.62 2248.04 2383.57 2307.89 2383.08 2246.62 2238.26
+-10 -1618.64 -1558.15 -1513.53 -1467.91 -1504.75 -1575.45 -1607.45
+-5 -1171.59 -1134.69 -1068.38 -1089.76 -1052.22 -1137.19 -1175.26
+0 -927.422 -912.98 -914.807 -923.267 -916.178 -915.935 -931.607
+5 -2220.38 -2242.28 -2302.9 -2328.67 -2304.49 -2244.92 -2225.5
+10 -3002.81 -2831.96 -2927.04 -3062.01 -2928.13 -2834.43 -3005.72
+20 -4933.15 -5558.64 -5444.38 -5036.28 -5444.26 -5587.47 -5081.96
+      </tableData>
+      <tableData breakPoint="-7.0">
+   -15     -10     -5       0       5      10      15
+-20 -1283.65 -723.387 -610.786 -554.796 -603.807 -726.142 -1288.75
+-10 3069.07 3593.8 3688.62 3672.99 3695.03 3582.88 3066.08
+-5 1394.66 1665.87 1407.67 1450.38 1404.19 1664.62 1396.25
+0 -1793.28 -1731.65 -1655.06 -1688.18 -1659.38 -1733.58 -1802.59
+5 -4474.63 -4410.83 -4401.34 -4472.52 -4402.55 -4410.62 -4490.71
+10 -4919.45 -4849.69 -5293.65 -5130.31 -5292.34 -4852.3 -4914.85
+20 2782.16 2163.08 2032.53 2080.37 2032.89 2178.74 2783.14
+      </tableData>
+      <tableData breakPoint="-4.0">
+   -15     -10     -5       0       5      10      15
+-20 -9931.35 -9565.34 -9422.17 -9557.63 -9425.91 -9568.22 -9935.3
+-10 714.96 780.878 940.663 974.944 937.901 772.282 711.276
+-5 1103.77 1052.14 1145.02 1019.12 1142.7 1050.3 1104.32
+0 -1737.3 -1720.52 -1710.08 -1683.96 -1709.67 -1722.1 -1739.43
+5 -2558.62 -2619.99 -2641.19 -2580.23 -2637.37 -2621.37 -2557.13
+10 2158.4 2050.97 2115.74 2223.88 2116.58 2011.98 2138.47
+20 9840.95 9715.1 9693.21 9939.72 9693.56 9685.79 9835.4
+      </tableData>
+      <tableData breakPoint="-1.0">
+   -15     -10     -5       0       5      10      15
+-20 -19229.3 -18324.7 -19316.9 -18998 -19320.4 -18313.1 -19228.2
+-10 -12268.3 -12356.5 -11955.7 -11991.5 -11956.5 -12367.8 -12270.9
+-5 -5795.54 -5592.72 -5407.07 -5409.62 -5407.1 -5589.93 -5791.95
+0 1358.54 1320.44 1263.7 1219.07 1269.43 1322.41 1365.86
+5 8109 7964.38 7805.69 7961.95 8056.12 7957.53 8059.53
+10 13353.8 13320 13203.7 13118.1 13199.8 13711.7 13330
+20 18843.4 20257 16914.5 17142.3 16913.9 20256.4 18842.1
+      </tableData>
+      <tableData breakPoint="2.0">
+   -15     -10     -5       0       5      10      15
+-20 -26829.2 -28541.5 -23795.6 -24351.2 -23796 -28541.7 -26830.1
+-10 -25167.2 -26779.7 -22983.5 -23039.1 -22987 -26777.5 -25165.1
+-5 -14049.3 -14525 -13716.2 -14026.8 -13757.1 -14517.8 -13994.4
+0 4580.9 4768.54 4745.76 4783.84 4690.14 4656.89 4535.46
+5 18673.4 18676.9 17944.2 18083.2 17908.6 18672.9 18669.3
+10 24077 25819 21647.6 21910.7 21648 25817.5 24075.4
+20 24982.4 26652.3 22321.7 22775.6 22321.8 26652.3 24982.4
+      </tableData>
+      <tableData breakPoint="9.0">
+            -15      -10      -5        0        5        10       15
+       -20  0.0      0.0      0.0      0.0      0.0      0.0      0.0
+       -10  0.0      0.0      0.0      0.0      0.0      0.0      0.0
+       -5   0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        0   0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        5   0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        10  0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        20  0.0      0.0      0.0      0.0      0.0      0.0      0.0
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/hull-pitch-moment-lbsft">
+   <function>
+    <description>
+      Dynamic pitch moment. Estimated using DATCOM.
+    </description>
+    <product>
+     <abs><property>hydro/qbar-u-psf</property></abs>
+     <property>metrics/hydro-vref-ft3</property>
+     <property>hydro/pitch-tweak-factor</property>
+     <table>
+      <independentVar lookup="row">hydro/alpha-rad</independentVar>
+      <tableData>
+        -2.269         .1735    
+        -1.396        -.3576    
+        -.6981        -.7043    
+        -.3491        -.4511    
+        -.1745        -.2367    
+        -.1396        -.1901    
+        -.1047        -.1429    
+        -.6981E-01    -.9524E-01
+        -.3491E-01    -.4753E-01
+        .000          .000    
+        .3491E-01     .4753E-01
+        .6981E-01     .9524E-01
+        .1047         .1429    
+        .1396         .1901    
+        .1745         .2367    
+        .3491         .4511    
+        .6981         .7043    
+        1.396         .3576    
+        2.269        -.1735    
+        3.142         .000
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/hydroplane-pitch-moment-lbsft">
+   <function>
+    <description>
+      Dynamic pitch moment. Estimated using DATCOM.
+    </description>
+    <product>
+     <abs><property>hydro/qbar-u-psf</property></abs>
+     <property>metrics/hydro-vref-ft3</property>
+     <property>hydro/pitch-tweak-factor</property>
+     <table>
+      <!-- The hydroplanes are out of the water when running at the surface. -->
+      <independentVar lookup="row">hydro/hull/pitch-deg</independentVar>
+      <independentVar lookup="column">hydro/hull/height-agl-ft</independentVar>
+      <tableData>
+            -20.0   -15.0    -7.0    -4.0    -1.0     1.0
+       -20    1.0     1.0     1.0     1.0     1.0     1.0
+       -10    1.0     1.0     1.0     1.0     1.0     1.0
+       -5     1.0     1.0     1.0     1.0     1.0     1.0
+        0     1.0     1.0     1.0     1.0     0.0     0.0
+        5     1.0     1.0     1.0     0.0     0.0     0.0
+        10    1.0     1.0     0.0     0.0     0.0     0.0
+        20    1.0     0.0     0.0     0.0     0.0     0.0
+      </tableData>
+     </table>
+     <table>
+      <independentVar lookup="row">hydro/alpha-rad</independentVar>
+      <tableData>
+        -2.269        -.0913
+        -1.396       -1.2569
+        -.6981        -.2603
+        -.3491        -.1377
+        -.1745        -.0720
+        -.1396        -.0594
+        -.1047        -.0476
+        -.6981E-01    -.0367
+        -.3491E-01    -.0267
+        .000          -.0177
+        .3491E-01     -.0098
+        .6981E-01     -.0030
+        .1047          .0030
+        .1396          .0097
+        .1745          .0175
+        .3491          .0691
+        .6981          .1808
+        1.396         1.9769
+        2.269          .7898
+        3.142         -.1361
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/diving-rudder-pitch-moment-lbsft">
+   <function>
+    <description>
+      Dynamic pitch moment. Estimated using DATCOM.
+    </description>
+    <product>
+     <abs><property>hydro/qbar-u-psf</property></abs>
+     <property>metrics/hydro-vref-ft3</property>
+     <property>hydro/pitch-tweak-factor</property>
+     <table>
+      <independentVar lookup="row">hydro/diving-rudder/alpha-rad</independentVar>
+      <tableData>
+        -2.269        -.0510 
+        -1.396        1.5403
+        -.6981         .2659
+        -.3491         .1540
+        -.1745         .0767
+        -.1396         .0596
+        -.1047         .0433
+        -.6981E-01     .0278
+        -.3491E-01     .0134
+        .000           .000    
+        .3491E-01     -.0134
+        .6981E-01     -.0279
+        .1047         -.0434
+        .1396         -.0599
+        .1745         -.0773
+        .3491         -.1575
+        .6981         -.1714
+        1.396         -.2278
+        2.269          .1786
+        3.142          .000
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/damping-pitch-moment-lbsft">
+   <function>
+    <product>
+     <value>1.0</value>
+     <value>-2500000.0</value> <!-- Guess -->
+     <property>velocities/thetadot-rad_sec</property>
+    </product>
+   </function>
+  </fcs_function>
+
+  <summer name="hydro/pitch-moment-lbsft">
+   <input>hydro/buoyancy-pitch-moment-lbsft</input>
+   <input>hydro/hull-pitch-moment-lbsft</input>
+   <input>hydro/hydroplane-pitch-moment-lbsft</input>
+   <input>hydro/diving-rudder-pitch-moment-lbsft</input>
+   <!-- Numerical failure on startup? Try reducing pitch damping first. -->
+   <input>hydro/damping-pitch-moment-lbsft</input>
+  </summer>
+
+ </channel>
+
+ <channel name="Roll">
+
+  <fcs_function name="hydro/buoyancy-roll-moment-lbsft">
+   <documentation>
+    Roll moment due to buoyancy.
+    This data was computed in Gerris using the 3d model.
+   </documentation>
+   <function>
+    <product>
+     <value>1.0</value>
+     <property>hydro/environment/rho-slug_ft3</property>
+     <property>hydro/environment/gravity-ft_sec2</property>
+     <table>
+      <independentVar lookup="row">hydro/hull/pitch-deg</independentVar>
+      <independentVar lookup="column">hydro/hull/roll-deg</independentVar>
+      <independentVar lookup="table">hydro/hull/height-agl-ft</independentVar>
+      <tableData breakPoint="-15.0">
+   -15     -10     -5       0       5      10      15
+-20 -471.518 -321.266 4.30678 0.59019 -1.05058 345.555 460.787
+-10 -80.7356 -70.3031 -65.6137 15.6014 73.677 76.6338 123.123
+-5 -26.5714 9.20852 65.7048 3.7844 -35.7229 -1.68262 34.2797
+0 -25.9049 -28.3295 -34.9737 4.66929 44.1961 37.3394 34.1162
+5 205.858 109.755 5.08582 4.28023 2.6998 -101.345 -198.516
+10 34.4567 42.4079 -32.5484 3.81542 40.4615 -39.5501 -32.8017
+20 374.883 32.702 -121.937 3.43986 122.775 -32.4615 -370.408
+      </tableData>
+      <tableData breakPoint="-7.0">
+   -15     -10     -5       0       5      10      15
+-20 -201.215 -10.5331 2.95016 18.7771 24.0247 9.94363 182.572
+-10 -637.911 -522.795 -476.498 3.58582 463.711 522.317 643.822
+-5 -82.5891 167.463 2.66643 3.11012 2.79747 -164.258 80.9862
+0 74.0732 -44.1881 73.2101 2.49985 -62.9366 48.4236 -63.6561
+5 265.953 345.659 116.147 1.67908 -112.486 -347.616 -293.355
+10 274.577 293.248 118.702 0.265579 -120.907 -292.718 -278.561
+20 12.9626 -127.344 -23.8474 0.177911 24.6042 156.622 -12.3093
+      </tableData>
+      <tableData breakPoint="-4.0">
+   -15     -10     -5       0       5      10      15
+-20 -54.5818 -35.9148 -56.9573 1.03726 87.6077 51.9796 59.4965
+-10 467.003 344.25 166.336 2.86135 -160.882 -333.973 -461.175
+-5 379.522 434.608 401.175 1.4997 -403.737 -422.637 -375.186
+0 -348.996 -263.754 -51.514 1.63494 47.5255 267.528 351.879
+5 -429.032 -400.893 -218.87 -1.24254 213.405 406.012 438.589
+10 -625.287 -308.31 -197.646 -0.462625 196.891 293.894 604.605
+20 70.0465 321.886 280.656 0.415548 -280.152 -320.02 -70.3662
+      </tableData>
+      <tableData breakPoint="-1.0">
+   -15     -10     -5       0       5      10      15
+-20 35.7879 -98.475 6.80791 1.14006 -22.0803 96.3822 -36.6694
+-10 257.097 -14.509 50.5295 2.31415 -46.0926 28.9054 -260.398
+-5 -57.8512 -36.1311 -11.7491 0.820582 14.6155 33.1668 58.141
+0 -110.441 -164.819 0.211178 6.06918 1.49551 164.26 108.943
+5 -367.276 -48.7884 -41.8425 1.17643 26.1296 49.7539 348.331
+10 -258.384 -73.717 10.6083 1.14324 -9.63365 95.9761 254.882
+20 -436.788 -202.516 -15.2184 0.0540241 15.272 202.873 436.993
+      </tableData>
+      <tableData breakPoint="2.0">
+   -15     -10     -5       0       5      10      15
+-20 26.1917 181.209 32.4555 -1.74597 -22.6155 -167.814 -40.5481
+-10 -317.707 -152.253 -44.0273 0.237146 34.0424 151.931 322.058
+-5 -137.883 -51.6228 72.8895 0.567428 -69.9741 49.4057 136.315
+0 -69.0846 11.9285 37.9178 1.74021 1.59064 -13.6858 66.6326
+5 14.6162 35.2344 6.48194 0.316544 -6.33444 -34.3384 -13.6593
+10 35.6049 -12.046 -18.1731 0.0307954 18.398 12.268 -35.5438
+20 -151.235 -254.792 16.9921 -0.0796536 -17.1616 254.923 151.185
+      </tableData>
+      <tableData breakPoint="9.0">
+            -15      -10      -5        0        5        10       15
+       -20  0.0      0.0      0.0      0.0      0.0      0.0      0.0
+       -10  0.0      0.0      0.0      0.0      0.0      0.0      0.0
+       -5   0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        0   0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        5   0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        10  0.0      0.0      0.0      0.0      0.0      0.0      0.0
+        20  0.0      0.0      0.0      0.0      0.0      0.0      0.0
+      </tableData>
+
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="hydro/damping-roll-moment-lbsft">
+   <function>
+    <product>
+     <value>1.0</value>
+     <value>-5000.0</value> <!-- Guess -->
+     <property>velocities/phidot-rad_sec</property>
+    </product>
+   </function>
+  </fcs_function>
+
+  <summer name="hydro/roll-moment-lbsft">
+   <input>hydro/buoyancy-roll-moment-lbsft</input>
+   <input>hydro/damping-roll-moment-lbsft</input>
+  </summer>
+
+ </channel>
+
+</system>

@@ -1,0 +1,186 @@
+*
+*  German type UB I submarine configuration for the Digital Datcom program
+*  
+*  Copyright (C) 2013  Anders Gidenstam
+*
+*    This program is free software; you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation; either version 2 of the License, or
+*    (at your option) any later version.
+*  
+*    This program is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*  
+*  Copyright (C) 2013  Anders Gidenstam
+*
+*  Model-Specific notes:
+*   o The origin is at the pressure hull center line at the bow.
+*   o The file is prepared to be run in 3 different setups by un/commenting
+*     relevant name lists.
+*     - Body only.
+*     - Forward (fixed) diving plane only.
+*     - Aft diving plane only.
+*     The different parts are manually assembled into a JSBSim configuration.
+*
+*-------------------------------------------------------------------------------
+* Command cards
+
+DIM M
+PART
+DERIV RAD
+DAMP
+*TRIM
+
+*-------------------------------------------------------------------------------
+* Flight Conditions
+
+ $FLTCON NMACH=1.0,
+         MACH(1)=0.07,
+         NALT=1.0,
+         ALT(1)=0.0,
+         NALPHA=20.0,
+*         ALSCHD(1)= 0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 15.0, 20.0, 25.0, 30.0,
+*                    45.0, 60.0, 75.0, 90.0,
+*                    105.0, 120.0, 135.0, 150.0, 165.0, 179.0,
+*         ALSCHD(1)= -179.0, -165.0, -150.0, -135.0, -120.0, -105.0,
+*                    -90.0, -75.0, -60.0, -45.0, -30.0, -25.0, -20.0,
+*                    -15.0, -10.0, -8.0, -6.0, -4.0, -2.0, 0.0,
+         ALSCHD(1)= -130.0, -80.0, -40.0, -20.0, -10.0, -8.0, -6.0, -4.0, -2.0,
+                       0.0,
+                       2.0, 4.0, 6.0, 8.0, 10.0, 20.0, 40.0, 80.0, 130.0,
+                     180.0,
+*         WT=0.0,
+         STMACH=0.6, TSMACH=1.4,
+         TR=0.0,
+         LOOP=1.0$
+
+*-------------------------------------------------------------------------------
+* Reference Parameters
+* Displacement volume: 141.00 m^3
+* Airship standard: ref surface = (volume)^(2/3)
+*                   ref length  = (volume)^(1/3)
+
+ $OPTINS SREF=27.09, CBARR=5.20, BLREF=5.20,
+         ROUGFC=0.635E-3$
+
+*-------------------------------------------------------------------------------
+* Synthesis Parameters
+
+ $SYNTHS XCG=14.00,             ! Note this is HydroRP in JSBSim.
+         ZCG=1.0,
+* Wing as forward hydro plane
+         XW=0.71,
+         ZW=1.63,
+         ALIW=-5.00,
+* Wing as aft diving rudder
+*         XW=27.15,
+*         ZW=-0.35,
+*         ALIW=0.00,
+* Wing as vertical fin
+         XW=21.70,
+         ZW=0.00,
+         ALIW=0.00,
+* Vertical tail
+*         XV=21.70,
+*         ZV=0.00,
+* Vertical fin
+*         XVF=21.70,
+*         ZVF=0.00,
+*         VERTUP=.FALSE.,
+         SCALE=1.0$
+
+*-------------------------------------------------------------------------------
+SAVE     ! We'll do the body and fins separately.
+
+*-------------------------------------------------------------------------------
+* Body Configuration
+
+* $BODY ITYPE=1.0, METHOD=2.0,
+*      NX=   17.0,
+*      X(1)=   0.00,  0.50,  1.00,  1.50,  2.00,  2.50,
+*              3.10,  9.20, 17.60,
+*             19.00, 21.00, 23.00, 24.00, 25.00, 26.00, 27.00,
+*             27.89,
+*      ZL(1)=  1.55,  0.92,  0.70,  0.60,  0.48,  0.35,
+*              0.20, -1.58, -1.58,
+*             -1.50, -1.30, -0.85, -0.60, -0.20,  0.20, 0.55,
+*              1.00,
+*      ZU(1)=  1.60,  2.20,  2.35,  2.40,  2.40,  2.40,
+*              2.40,  2.30,  2.10,
+*              2.00,  1.90,  1.70,  1.60,  1.50,  1.40, 1.30,
+*              1.00,
+*      R(1)=   0.00,  0.35,  0.55,  0.68,  0.75,  0.82,
+*              0.90,  1.58,  1.58,
+*              1.50,  1.22,  1.03,  0.82,  0.60,  0.30,  0.12,
+*              0.0$
+
+*CASEID BODY: UB_I
+*-------------------------------------------------------------------------------
+*NEXT CASE
+
+*-------------------------------------------------------------------------------
+* Wing as forward hydro plane.
+* $WGPLNF TYPE=1.0,
+*         CHRDR=3.47,
+*         CHRDTP=0.45,
+*         SSPN=1.05,
+*         SSPNE=0.59,
+*         SAVSI=64.5,
+*         CHSTAT=0.0,
+*         DHDADI=0.0$
+
+*-------------------------------------------------------------------------------
+* Wing as aft diving rudder.
+* $WGPLNF TYPE=1.0,
+*         CHRDR=1.11,
+*         CHRDTP=1.11,
+*         SSPN=0.84,
+*         SSPNE=0.84,
+*         SAVSI=0.0,
+*         CHSTAT=0.34,
+*         DHDADI=0.0$
+
+*-------------------------------------------------------------------------------
+* Wing as vertical fin (run as wing alone!)
+ $WGPLNF TYPE=1.0,
+         CHRDR=4.52,
+         CHRDTP=0.32,
+         SSPN=1.65,
+         SSPNE=1.50,   ! Guesstimate
+         SAVSI=0.0,
+         CHSTAT=1.0$
+
+
+NACA W 4 0009          ! From SenecaII. No idea what the real one is.
+
+*SAVE
+*CASEID HTAIL: UB_I
+*-------------------------------------------------------------------------------
+*NEXT CASE
+
+*-------------------------------------------------------------------------------
+* Vertical Tail as nothing + vertical fin
+
+* $VTPLNF TYPE=1.0,
+*         CHRDR=4.52,
+*         CHRDTP=0.32,
+*         SSPN=0.50,
+*         SSPNE=0.10,   ! Guesstimate
+*         SAVSI=0.0,
+*         CHSTAT=1.0$
+
+* $VFPLNF TYPE=1.0,
+*         CHRDR=4.52,
+*         CHRDTP=0.32,
+*         SSPN=1.65,
+*         SSPNE=1.50,   ! Guesstimate
+*         SAVSI=0.0,
+*         CHSTAT=1.0$
+
+*NACA V 4 0009          ! From SenecaII. No idea what the real one is.
+*NACA VF 4 0009          ! From SenecaII. No idea what the real one is.
+
+CASEID TOTAL: UB_I      ! The total configuration isn't that useful.
+*-------------------------------------------------------------------------------

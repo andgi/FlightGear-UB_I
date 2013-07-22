@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+  German type UB I submarine "flight" model for JSBSim.
+
+    Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  
+-->
+<system name="Propulsion">
+
+ <documentation>
+  The drive chain is
+    diesel - clutch - electrical motor - clutch - propeller.
+
+  "The propeller is 3'-6-1/2" diameter, 1'-5" pitch." ([3])
+ </documentation>
+ <documentation>
+   JavaProp: Designed for max power at 7kt with RPM chosen for the design pitch.
+     #blades 3
+     n          600 RPM
+     D          1.00 m
+     Spinner D  0.20 m
+     Velocity   3.6 m/s
+     Power      44742 W
+
+   Airfoil
+     Flat plate, Re=100000
+     Flat plate, Re=100000
+     Flat plate, Re=100000
+     Flat plate, Re=100000
+
+   v/(nD)       0.432     v/(ΩR)  0.138
+   Efficiency η 54.037 %        loading very high
+   Thrust  T    6,711.24 N      Ct      0.094
+   Power  P     44.71 kW        Cp      0.0752
+   β at 75%R    16.9°    Pitch H        716 mm
+ </documentation>
+
+ <!-- The diesel and electrical engines can be disconnected from the propeller
+      and each other.
+      The clutch positions are
+         0   disengaged
+         1   engaged
+ -->
+ <property value="0.0">fcs/clutch-cmd-norm[0]</property>
+ <property value="0.0">fcs/clutch-cmd-norm[1]</property>
+
+ <!-- The clutches ==========================================================-->
+
+ <channel name="clutches">
+
+  <switch name="propulsion/engine[0]/clutch-pos-norm">
+   <default value="0.0"/>
+   <test logic="AND" value="1.0">
+     fcs/clutch-cmd-norm[0] GT 0.5
+   </test>
+  </switch>
+  <!-- switch name="propulsion/engine[1]/clutch-pos-norm">
+   <default value="0.0"/>
+   <test logic="AND" value="1.0">
+     fcs/clutch-cmd-norm[1] GT 0.5
+   </test>
+  </switch>
+
+  <switch name="propulsion/engine[2]/clutch-pos-norm">
+   <default value="0.0"/>
+   <test logic="AND" value="1.0">
+     fcs/clutch-cmd-norm[0] LT -0.5
+   </test>
+  </switch>
+  <switch name="propulsion/engine[3]/clutch-pos-norm">
+   <default value="0.0"/>
+   <test logic="AND" value="1.0">
+     fcs/clutch-cmd-norm[1] LT -0.5
+   </test>
+  </switch -->
+
+ </channel>
+
+ <!-- The propeller. ========================================================-->
+
+ <channel name="Propeller">
+
+  <fcs_function name="propulsion/propeller[0]/rpm">
+   <function>
+    <sum>
+     <product>
+      <value>1.0</value> <!-- 1/gear ratio. -->
+      <property>propulsion/engine[0]/clutch-pos-norm</property>
+      <property>propulsion/engine[0]/engine-rpm</property>
+     </product>
+     <!-- product>
+      <value>1.0</value>
+      <property>propulsion/engine[2]/clutch-pos-norm</property>
+      <property>propulsion/engine[2]/engine-rpm</property>
+     </product -->
+    </sum>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="propulsion/propeller[0]/advance-ratio">
+   <function>
+    <quotient>
+     <property>hydro/vbx-fps</property>
+     <sum>
+      <value>0.000000001</value>
+      <product>
+       <value>0.016666667</value>
+       <property>propulsion/propeller[0]/rpm</property>
+       <value>9.0</value>
+      </product>
+     </sum>
+    </quotient>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="propulsion/propeller[0]/thrust-coefficient">
+   <function>
+    <product>
+     <value>1.0</value>
+     <table>
+      <independentVar lookup="row">propulsion/propeller[0]/advance-ratio</independentVar>
+      <tableData>
+   0.00000   0.19844
+   0.05000   0.19130
+   0.10000   0.17943
+   0.15000   0.17052
+   0.20000   0.16036
+   0.25000   0.14707
+   0.30000   0.13297
+   0.35000   0.11338
+   0.40000   0.10415
+   0.45000   0.08888
+   0.50000   0.07179
+   0.55000   0.05395
+   0.60000   0.03572
+   0.65000   0.01671
+   0.70000  -0.00237
+   0.75000  -0.02301
+   0.80000  -0.04595
+   0.85000  -0.06889
+   0.90000  -0.09183
+   0.95000  -0.11477
+   1.00000  -0.13771
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="propulsion/propeller[0]/power-coefficient">
+   <function>
+    <product>
+     <value>1.0</value>
+     <table>
+      <independentVar lookup="row">propulsion/propeller[0]/advance-ratio</independentVar>
+      <tableData>
+   0.00000   0.12914
+   0.05000   0.11777
+   0.10000   0.11469
+   0.15000   0.11096
+   0.20000   0.10696
+   0.25000   0.10148
+   0.30000   0.09514
+   0.35000   0.08505
+   0.40000   0.08070
+   0.45000   0.07228
+   0.50000   0.06230
+   0.55000   0.05130
+   0.60000   0.03950
+   0.65000   0.02672
+   0.70000   0.01360
+   0.75000   0.01000
+   0.80000   0.01000
+   0.85000   0.01000
+   0.90000   0.01000
+   0.95000   0.01000
+   1.00000   0.01000
+      </tableData>
+     </table>
+    </product>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="propulsion/propeller[0]/thrust-lbs">
+   <function>
+    <min>
+     <product>
+      <property>hydro/environment/rho-slug_ft3</property>
+      <value>0.000277777</value> <!-- 1/60^2 -->
+      <property>propulsion/propeller[0]/rpm</property>
+      <property>propulsion/propeller[0]/rpm</property>
+      <value>115.86</value>        <!-- D^4 [ft] -->
+      <property>propulsion/propeller[0]/thrust-coefficient</property>
+     </product>
+     <value>100000.0</value>
+    </min>
+   </function>
+   <output>external_reactions/propeller[0]/magnitude</output>
+  </fcs_function>
+ 
+  <fcs_function name="propulsion/propeller[0]/power-required-hp">
+   <function>
+    <product>
+     <value>0.0018181818</value> <!-- slug ft^2 / s^3 -> hp -->
+     <property>hydro/environment/rho-slug_ft3</property>
+     <value>0.000004629</value>  <!-- 1/60^3 -->
+     <property>propulsion/propeller[0]/rpm</property>
+     <property>propulsion/propeller[0]/rpm</property>
+     <property>propulsion/propeller[0]/rpm</property>
+     <value>380.12</value>        <!-- D^5 [ft] -->
+     <property>propulsion/propeller[0]/power-coefficient</property>
+    </product>
+   </function>
+  </fcs_function>
+
+ </channel>
+
+ <!-- The main engine. ======================================================-->
+
+ <channel name="The diesel engine">
+
+  <fcs_function name="propulsion/engine[0]/required-power-coefficient">
+   <function>
+    <max>
+     <product>
+      <property>propulsion/engine[0]/clutch-pos-norm</property>
+      <value>1.0</value> <!-- (1/gear ratio)^3 -->
+      <quotient>
+       <property>hydro/environment/rho-slug_ft3</property>
+       <property>atmosphere/rho-slugs_ft3</property>
+      </quotient>
+      <property>propulsion/propeller[0]/power-coefficient</property>
+     </product>
+     <value>0.05</value>
+    </max>
+   </function>
+  </fcs_function>
+
+  <!-- Set the power required from the engine. -->
+  <fcs_function name="tmp/blade-angle-deg[0]">
+   <function>
+    <product>
+     <value>0.01</value>
+     <property>propulsion/engine[0]/required-power-coefficient</property>
+    </product>
+   </function>
+   <output>propulsion/engine[0]/blade-angle</output>
+  </fcs_function>
+
+ </channel>
+
+</system>

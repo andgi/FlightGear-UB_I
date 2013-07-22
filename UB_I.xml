@@ -1,0 +1,736 @@
+<?xml version="1.0"?>
+<!--
+
+  German type UB I submarine "flight" model for JSBSim.
+
+    Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  
+-->
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sourceforge.net/JSBSim.xsl"?>
+<fdm_config name="MTB_20m" version="2.0" release="ALPHA"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
+
+ <fileheader>
+  <author>Anders Gidenstam</author>
+  <email>anders at gidenstam dot org</email>
+
+  <filecreationdate>2013-07-08</filecreationdate>
+  <version>$Id$</version>
+
+  <description>Models a German type UB I submarine.</description>
+
+  <license>
+   <licenseName>GPL</licenseName>
+   <licenseURL>http://www.gnu.org/licenses/gpl.html</licenseURL>
+  </license>
+  <note>
+   This model was created using publicly available data, publicly available
+   technical reports, textbooks, and guesses. It contains no proprietary or
+   restricted data. It has been validated only to the extent that it may seem
+   to "fly right", and possibly to comply to published, publicly known, 
+   performance data (maximum speed, endurance, etc.).
+
+   This model is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+  </note>
+
+  <!-- References:
+       [1] http://en.wikipedia.org/wiki/German_Type_UB_I_submarine
+       [2] http://dreadnoughtproject.org/models/ships/SMS_UB_2/
+       [3] Prepared from an examination of the captured U.C.5,
+           ROYAL NAVY INTELLIGENCE DOCUMENTS, 1916
+       [4] S.M. SUBMARINES "U.C.1" to "U.C.10",
+           U-Boot-Inspektion, Reichsmarineamt, 1914(?)
+       [5] http://www.blackseadiver.ru/divesites.html?divesiteId=14
+       [6] http://www.e-a-r-l-y.freeserve.co.uk/u57_torpedo.htm
+       [7] http://www.navweaps.com/Weapons/WTGER_PreWWII.htm
+       [8] http://germannavalwarfare.info/
+  -->
+
+ </fileheader>
+
+ <documentation>
+  The origin of the structural frame is at the bow of the ship at the
+  centre line of the central (cylindrical) part of the pressure hull.
+  See the 3d model.
+ </documentation>
+
+ <documentation>
+   [6]: "UB-7
+   Type:          UB-1
+   Size:          28.1 x 3.2 x 3,0 meters
+   Displacement:  127/142 tons
+   Engine:        a single 60 bhp diesel a single 89 kW electric motor
+   Shipyard:      Germaniawerft, Kiel ( Werk 245 )
+   Laid down:     15 Nov, 1914
+   Launched:      30 Nov, 1914
+   Commissioned:  6 May, 1915"
+
+   "The ballast tank capacity was 23 cubic metres and the pressure hull
+   (3.15 meters in diameter) easily housed it."
+
+   "SM UB-12 had 6 meters mounting built in front of the conning tower
+   which was designed for 4 inclined tubes (with a total of 8 mines) -
+   she was a prototype of the UC class of minelayers. This design
+   turned out to be terribly unsuccessful(!?[*]). The boats deployed mines
+   under themselves."
+
+   [*] Yet, the UC I type mine layers were used throughout the war.
+       14 of the 15 UC I type submarines were lost, two of which to own mines
+       and two to unknown causes.
+       According to [1] UB-10, UB-12, UB-16 and UB-17 of the Flanders Flotilla
+       were also converted to mine layers similar to the UC I type in late
+       1916 or early 1917. This occured well after the introduction of the
+       UC I class, possibly to replace lost UC Is.
+ </documentation>
+
+ <documentation>
+  The displacement of the 3d model is about 137.5 m^3.
+ </documentation>
+
+ <metrics>
+  <wingarea unit="FT2">     1510.0000  </wingarea> <!-- FIXME: update these -->
+  <wingspan unit="FT">       114.0000  </wingspan>
+  <chord unit="FT">           16.4583  </chord>
+  <htailarea unit="FT2">     226.6750  </htailarea>
+  <htailarm unit="FT">        12.2147  </htailarm>
+  <vtailarea unit="FT2">     319.0423  </vtailarea>
+  <vtailarm unit="FT">        17.2533  </vtailarm>
+  <location name="AERORP" unit="M">
+   <x> 14.00 </x>
+   <y>  0.00 </y>
+   <z>  1.00 </z>
+  </location>
+  <location name="EYEPOINT" unit="M">
+   <x> 12.95 </x>
+   <y>  0.00 </y>
+   <z>  5.42 </z>
+  </location>
+  <location name="VRP" unit="M">
+   <x> 0.00 </x>
+   <y> 0.00 </y>
+   <z> 0.00 </z>
+  </location>
+ </metrics>
+
+ <mass_balance>
+  <documentation>
+   Information from ([1])
+     Length:                 27.89 m
+     Surface displacement: ~127000 kg (fully loaded?)
+
+  </documentation>
+  <documentation>
+    Rough model to estimate CG and inertia tensor.
+
+    % Steiners theorem:
+    % Ixx = \bar{Ixx} + m sqrt(\bar{y}^2 + \bar{z}^2)
+    % Ixy = \bar{Ixy} + m \bar{x} \bar{y}
+
+    % The pressure hull is a uniform cylinder from 3m to 26m
+    % with diameter 3.15m.
+    % CG in the middle (i.e. at (14.5, 0, 0)) m.
+    m_hull = (127000 - 2*773 - 2*500 - 2000 - 1500 - 2*8600 - 5500 - 18000) % KG
+    r = 3.15/2   % m
+    h = 23.0     % m
+
+    Ixx_hull = m_hull * r^2 / 2
+    Iyy_hull = 1/12 * m_hull * (3*r^2 + h^2)
+    Izz_hull = 1/12 * m_hull * (3*r^2 + h^2)
+    Ixy_hull = Ixz_hull = Iyz_hull = 0
+
+    Ixx = Ixx_hull
+    Iyy = Iyy_hull
+    Izz = Izz_hull
+    Ixy = Ixy_hull
+    Ixz = Ixz_hull
+    Iyz = Iyz_hull
+  </documentation>
+  <ixx unit="KG*M2">9.9540e+04</ixx>
+  <iyy unit="KG*M2">3.5876e+06</iyy>
+  <izz unit="KG*M2">3.5876e+06</izz>
+  <!-- emptywt unit="KG">80254</emptywt -->
+  <emptywt unit="KG">73800</emptywt>
+  <location name="CG" unit="M">
+   <x>13.75</x>
+   <y> 0.00</y>
+   <z> 0.00</z>
+  </location>
+
+  <documentation>
+   Adjustable payload pointmasses.
+  </documentation>
+
+  <pointmass name="Port torpedo">
+   <!-- 773 kg for torpedo C/06 AV, 810 kg for torpedo C/06 D -->
+   <weight unit="KG"> 773.0 </weight>
+   <location unit="M">
+    <x> 5.50</x>
+    <y>-0.50</y>
+    <z> 0.90</z>
+   </location>
+  </pointmass>
+  <pointmass name="Starboard torpedo">
+   <!-- 773 kg for torpedo C/06 AV, 810 kg for torpedo C/06 D -->
+   <weight unit="KG"> 773.0 </weight>
+   <location unit="M">
+    <x> 5.50</x>
+    <y> 0.50</y>
+    <z> 0.90</z>
+   </location>
+  </pointmass>
+
+  <pointmass name="Main ballast tank 1">
+   <!-- Can hold about 7.304 m^3 of water. Calculated in blender. -->
+   <weight unit="KG"> 0.0 </weight>
+   <location unit="M">
+    <x> 12.20 </x>
+    <y>  0.00 </y>
+    <z> -1.00 </z>
+   </location>
+  </pointmass>
+  <pointmass name="Main ballast tank 2">
+   <!-- Can hold about 6.629 m^3 of water. Calculated in blender. -->
+   <weight unit="KG"> 0.0 </weight>
+   <location unit="M">
+    <x> 14.40 </x>
+    <y>  0.00 </y>
+    <z> -1.00 </z>
+   </location>
+  </pointmass>
+
+  <pointmass name="Port compensating tank">
+   <!-- Can hold about 2.244 m^3 of water. Calculated in blender. -->
+   <weight unit="KG"> 0.0 </weight>
+   <location unit="M">
+    <x> 13.73 </x>
+    <y> -0.96 </y>
+    <z>  0.21 </z>
+   </location>
+  </pointmass>
+  <pointmass name="Starboard compensating tank">
+   <!-- Can hold about 2.244 m^3 of water. Calculated in blender. -->
+   <weight unit="KG"> 0.0 </weight>
+   <location unit="M">
+    <x> 13.73 </x>
+    <y>  0.96 </y>
+    <z>  0.21 </z>
+   </location>
+  </pointmass>
+
+  <pointmass name="Forward trim tank">
+   <!-- Can hold about 1.651 m^3 of water. Calculated in blender. -->
+   <weight unit="KG"> 0.0 </weight>
+   <location unit="M">
+    <x>  2.00 </x>
+    <y>  0.00 </y>
+    <z>  1.90 </z>
+   </location>
+  </pointmass>
+  <pointmass name="Aft trim tank">
+   <!-- Can hold about 1.327 m^3 of water. Calculated in blender. -->
+   <weight unit="KG"> 0.0 </weight>
+   <location unit="M">
+    <x> 25.00 </x>
+    <y>  0.00 </y>
+    <z>  0.50 </z>
+   </location>
+  </pointmass>
+
+  <!-- Fixed weights. -->
+  <pointmass name="Ballast keel">
+   <weight unit="KG">6000.0</weight>
+   <location unit="M">
+    <x>10.00</x>
+    <y> 0.00</y>
+    <z>-1.70</z>
+   </location>
+  </pointmass>
+  <pointmass name="Ballast keel">
+   <weight unit="KG">6000.0</weight>
+   <location unit="M">
+    <x>14.00</x>
+    <y> 0.00</y>
+    <z>-1.70</z>
+   </location>
+  </pointmass>
+  <pointmass name="Ballast keel">
+   <weight unit="KG">6000.0</weight>
+   <location unit="M">
+    <x>18.00</x>
+    <y> 0.00</y>
+    <z>-1.70</z>
+   </location>
+  </pointmass>
+
+  <pointmass name="Port torpedo tube">
+   <weight unit="KG"> 500.0 </weight>
+   <location unit="M">
+    <x>  5.50 </x>
+    <y> -0.50 </y>
+    <z>  0.90 </z>
+   </location>
+  </pointmass>
+  <pointmass name="Starboard torpedo tube">
+   <weight unit="KG"> 500.0 </weight>
+   <location unit="M">
+    <x>  5.50 </x>
+    <y>  0.50 </y>
+    <z>  0.90 </z>
+   </location>
+  </pointmass>
+
+  <pointmass name="Diesel engine">
+   <weight unit="KG">2000.0</weight>
+   <location unit="M">
+    <x> 19.00 </x>
+    <y>  0.00 </y>
+    <z>  0.00 </z>
+   </location>
+  </pointmass>
+
+  <pointmass name="Electrical engine">
+   <weight unit="KG">1500.0</weight>
+   <location unit="M">
+    <x> 21.70 </x>
+    <y>  0.00 </y>
+    <z> -0.30 </z>
+   </location>
+  </pointmass>
+
+  <documentation>
+   According to [5] and the other drawings found each battery consists of
+   7x8 cells.
+   Each cell has approximately the (l w h) dimensions 0.28x0.32x0.64 m.
+
+   The density of a German WWII "33 MAL 800W" cell is about 2670kg/m^3
+   [http://www.uboatarchive.net/U-570BritishReport.htm].
+   Assuming the same density for this cell gives 153 kg per cell for a
+   per battery tank weight of about 8600 kg.
+  </documentation>
+  <pointmass name="Battery 1">
+   <weight unit="KG">8600.0</weight>
+   <location unit="M">
+    <x> 10.00 </x>
+    <y>  0.00 </y>
+    <z> -1.00 </z>
+   </location>
+  </pointmass>
+
+  <pointmass name="Battery 2">
+   <weight unit="KG">8600.0</weight>
+   <location unit="M">
+    <x> 16.50 </x>
+    <y>  0.00 </y>
+    <z> -1.00 </z>
+   </location>
+  </pointmass>
+
+ </mass_balance>
+
+ <ground_reactions>
+  <documentation>
+   The hydrostatic interactions of the hull are modelled by external forces.
+  </documentation>
+
+  <contact type="STRUCTURE" name="BOW">
+   <location unit="M">
+    <x>   0.00 </x>
+    <y>   0.00 </y>
+    <z>  53.00 </z>
+   </location>
+   <static_friction>  0.00 </static_friction>
+   <dynamic_friction> 0.00 </dynamic_friction>
+   <spring_coeff unit="LBS/FT">      200000.00 </spring_coeff>
+   <damping_coeff unit="LBS/FT/SEC"> 150000.00 </damping_coeff>
+  </contact>
+
+  <contact type="STRUCTURE" name="STERN">
+   <location unit="M">
+    <x>  27.89 </x>
+    <y>   0.00 </y>
+    <z>  53.00 </z>
+   </location>
+   <static_friction>  0.00 </static_friction>
+   <dynamic_friction> 0.00 </dynamic_friction>
+   <spring_coeff unit="LBS/FT">      200000.00 </spring_coeff>
+   <damping_coeff unit="LBS/FT/SEC"> 150000.00 </damping_coeff>
+  </contact>
+
+  <contact type="STRUCTURE" name="PORT SIDE">
+   <location unit="M">
+    <x> 14.00 </x>
+    <y> -2.50 </y>
+    <z> 53.00 </z>
+   </location>
+   <static_friction>  0.00 </static_friction>
+   <dynamic_friction> 0.00 </dynamic_friction>
+   <spring_coeff unit="LBS/FT">      200000.00 </spring_coeff>
+   <damping_coeff unit="LBS/FT/SEC"> 150000.00 </damping_coeff>
+  </contact>
+  <contact type="STRUCTURE" name="STARBOARD SIDE">
+   <location unit="M">
+    <x> 14.00 </x>
+    <y>  2.50 </y>
+    <z> 53.00 </z>
+   </location>
+   <static_friction>  0.00 </static_friction>
+   <dynamic_friction> 0.00 </dynamic_friction>
+   <spring_coeff unit="LBS/FT">      200000.00 </spring_coeff>
+   <damping_coeff unit="LBS/FT/SEC"> 150000.00 </damping_coeff>
+  </contact>
+
+ </ground_reactions>
+
+ <propulsion>
+  <documentation>
+  </documentation>
+  <!--
+  === Engine ================================================
+  -->
+  <!-- Diesel engine -->
+  <engine file="eng_Korting60bhp">
+   <location unit="M">
+    <x>  19.0 </x>
+    <y>   0.0 </y>
+    <z>   0.0 </z>
+   </location>
+   <orient unit="DEG">
+    <roll>  0.0 </roll>
+    <pitch> 0.0 </pitch>
+    <yaw>   0.0 </yaw>
+   </orient>
+   <feed>0</feed>
+   <thruster file="prop_UB_I">
+    <location unit="M">
+     <x>  26.5 </x>
+     <y>   0.0 </y>
+     <z>  -0.3 </z>
+    </location>
+    <orient unit="DEG">
+     <roll>  0.0 </roll>
+     <pitch> 0.0 </pitch>
+     <yaw>   0.0 </yaw>
+    </orient>
+   </thruster>
+  </engine>
+
+  <!--
+  === Fuel tanks ============================================
+  -->
+  <documentation>
+  </documentation>
+
+  <tank type="FUEL">
+   <location unit="M">
+    <x> 18.5</x>
+    <y>  0.0</y>
+    <z> -1.0</z>
+   </location>
+   <capacity unit="KG">1833.0</capacity>
+   <contents unit="KG">1833.0</contents>
+  </tank>
+  <tank type="FUEL">
+   <location unit="M">
+    <x> 19.1</x>
+    <y>  0.0</y>
+    <z> -1.0</z>
+   </location>
+   <capacity unit="KG">1833.0</capacity>
+   <contents unit="KG">1833.0</contents>
+  </tank>
+  <tank type="FUEL">
+   <location unit="M">
+    <x> 19.8</x>
+    <y>  0.0</y>
+    <z> -1.0</z>
+   </location>
+   <capacity unit="KG">1833.0</capacity>
+   <contents unit="KG">1833.0</contents>
+  </tank>
+
+ </propulsion>
+
+ <external_reactions>
+
+  <documentation>
+   HRP: 14, 0, 1 m
+  </documentation>
+
+  <force name="hydro-X" frame="LOCAL" unit="LBS">
+   <location unit="M">
+    <x>  14.00 </x>
+    <y>   0.00 </y>
+    <z>   1.00 </z>
+   </location>
+   <direction>
+    <x> 1.0 </x>
+    <y> 0.0 </y>
+    <z> 0.0 </z>
+   </direction>
+  </force>
+  <force name="hydro-Y" frame="LOCAL" unit="LBS">
+   <location unit="M">
+    <x>  14.00 </x>
+    <y>   0.00 </y>
+    <z>   1.00 </z>
+   </location>
+   <direction>
+    <x> 0.0 </x>
+    <y> 1.0 </y>
+    <z> 0.0 </z>
+   </direction>
+  </force>
+  <force name="hydro-Z" frame="LOCAL" unit="LBS">
+   <location unit="M">
+    <x>  14.00 </x>
+    <y>   0.00 </y>
+    <z>   1.00 </z>
+   </location>
+   <direction>
+    <x> 0.0 </x>
+    <y> 0.0 </y>
+    <z>-1.0 </z>
+   </direction>
+  </force>
+
+  <force name="hydro-pitch[0]" frame="LOCAL" unit="LBS">
+   <location unit="M">
+    <x>  13.6952 </x>
+    <y>   0.00 </y>
+    <z>   1.00 </z>
+   </location>
+   <direction>
+    <x> 0.0 </x>
+    <y> 0.0 </y>
+    <z>-1.0 </z>
+   </direction>
+  </force>
+  <force name="hydro-pitch[1]" frame="LOCAL" unit="LBS">
+   <location unit="M">
+    <x>  14.3048 </x>
+    <y>   0.00 </y>
+    <z>   1.00 </z>
+   </location>
+   <direction>
+    <x> 0.0 </x>
+    <y> 0.0 </y>
+    <z>-1.0 </z>
+   </direction>
+  </force>
+
+  <force name="hydro-roll[0]" frame="LOCAL" unit="LBS">
+   <location unit="M">
+    <x>  14.00 </x>
+    <y>  -0.3048 </y>
+    <z>   1.00 </z>
+   </location>
+   <direction>
+    <x> 0.0 </x>
+    <y> 0.0 </y>
+    <z>-1.0 </z>
+   </direction>
+  </force>
+  <force name="hydro-roll[1]" frame="LOCAL" unit="LBS">
+   <location unit="M">
+    <x>  14.00 </x>
+    <y>   0.3048 </y>
+    <z>   1.00 </z>
+   </location>
+   <direction>
+    <x> 0.0 </x>
+    <y> 0.0 </y>
+    <z>-1.0 </z>
+   </direction>
+  </force>
+
+  <force name="hydro-yaw[0]" frame="BODY" unit="LBS">
+   <location unit="M">
+    <x>  14.00 </x>
+    <y>  -0.3048 </y>
+    <z>   1.00 </z>
+   </location>
+   <direction>
+    <x> 1.0 </x>
+    <y> 0.0 </y>
+    <z> 0.0 </z>
+   </direction>
+  </force>
+  <force name="hydro-yaw[1]" frame="BODY" unit="LBS">
+   <location unit="M">
+    <x>  14.00 </x>
+    <y>   0.3048 </y>
+    <z>   1.00 </z>
+   </location>
+   <direction>
+    <x> 1.0 </x>
+    <y> 0.0 </y>
+    <z> 0.0 </z>
+   </direction>
+  </force>
+
+  <force name="propeller[0]" frame="BODY" unit="LBS">
+   <location unit="M">
+    <x>  26.4 </x>
+    <y>   0.0 </y>
+    <z>  -0.3 </z>
+   </location>
+   <direction>
+    <x> 1.0 </x>
+    <y> 0.0 </y>
+    <z> 0.0 </z>
+   </direction>
+  </force>
+
+  <force name="mooring-north" frame="LOCAL" unit="LBS">
+   <location unit="FT">
+    <x> 0.0 </x>
+    <y> 0.0 </y>
+    <z> 0.0 </z>
+   </location>
+   <direction>
+    <x> 1.0 </x>
+    <y> 0.0 </y>
+    <z> 0.0 </z>
+   </direction>
+  </force>
+  <force name="mooring-east" frame="LOCAL" unit="LBS">
+   <location unit="FT">
+    <x> 0.0 </x>
+    <y> 0.0 </y>
+    <z> 0.0 </z>
+   </location>
+   <direction>
+    <x> 0.0 </x>
+    <y> 1.0 </y>
+    <z> 0.0 </z>
+   </direction>
+  </force>
+  <force name="mooring-down" frame="LOCAL" unit="LBS">
+   <location unit="FT">
+     <x> 0.0 </x>
+     <y> 0.0 </y>
+     <z> 0.0 </z>
+   </location>
+   <direction>
+    <x> 1.0 </x>
+    <y> 0.0 </y>
+    <z> 0.0 </z>
+   </direction>
+  </force>
+
+ </external_reactions>
+
+ <system name="Steering gear">
+
+  <channel name="Rudder">
+
+   <summer name="fcs/rudder/pos-norm">
+    <input>fcs/rudder-cmd-norm</input>
+    <input>-fcs/aileron-cmd-norm</input>
+    <clipto>
+     <min>-1</min>
+     <max> 1</max>
+    </clipto>
+    <output>fcs/rudder-pos-norm</output>
+   </summer>
+
+   <aerosurface_scale name="fcs/rudder/pos-rad">
+    <input>fcs/rudder/pos-norm</input>
+    <range>
+     <min>-0.4363</min>
+     <max> 0.4363</max>
+    </range>
+    <output>fcs/rudder-pos-rad</output>
+   </aerosurface_scale>
+
+   <pure_gain name="fcs/rudder/pos-deg">
+    <input>fcs/rudder/pos-rad</input>
+    <gain>57.29578</gain>
+    <output>fcs/rudder-pos-deg</output>
+   </pure_gain>
+
+  </channel>
+
+  <channel name="Diving rudder">
+
+   <summer name="fcs/diving-rudder/pos-norm">
+    <input>fcs/elevator-cmd-norm</input>
+    <clipto>
+     <min>-1</min>
+     <max> 1</max>
+    </clipto>
+    <output>fcs/elevator-pos-norm</output>
+   </summer>
+
+   <aerosurface_scale name="fcs/diving-rudder/pos-rad">
+    <input>fcs/diving-rudder/pos-norm</input>
+    <range>
+     <min>-0.4363</min>
+     <max> 0.4363</max>
+    </range>
+    <output>fcs/diving-rudder-pos-rad</output>
+   </aerosurface_scale>
+
+   <pure_gain name="fcs/diving-rudder/pos-deg">
+    <input>fcs/diving-rudder/pos-rad</input>
+    <gain>57.29578</gain>
+    <output>fcs/diving-rudder-pos-deg</output>
+   </pure_gain>
+
+  </channel>
+
+ </system>
+
+ <system file="hydrodynamics"/>
+ <system file="UB_I-hydrodynamics"/>
+ <system file="propulsion"/>
+ <system file="ballast"/>
+
+ <!-- system file="fgfs4jsbsim" -->
+ <!-- system file="mooring-jsbsim" -->    <!-- Mooring setup for FlightGear. -->
+  <!-- Configuration -->
+  <!--  Mooring rope -->
+  <!-- property value="250.0"> mooring/rope-spring-coeff-lbs_ft </property>
+  <property value="10000.0"> mooring/max-rope-force-lbs </property>
+  <property value="20.0"> mooring/rope-length-ft </property>
+
+ </system -->
+
+ <aerodynamics>
+
+  <axis name="DRAG"> <!-- FIXME! -->
+
+   <!-- Wild guess: D = K A q_inf -->
+   <!-- A = cross sectional area (ft^2); -->
+   <function name="aero/force/D_turret">
+    <description>Drag</description>
+    <product>
+     <property>aero/qbar-psf</property>
+     <value> 193.5 </value>
+     <!-- Start CD -->
+     <value> 0.5 </value>
+    </product>
+   </function>
+  </axis>
+
+ </aerodynamics>
+
+</fdm_config>

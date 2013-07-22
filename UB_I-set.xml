@@ -1,0 +1,361 @@
+<?xml version="1.0"?>
+<!--
+  German type UB I submarine for FlightGear.
+
+  Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+  This file is licensed under the GPL license version 2 or later.
+-->
+<PropertyList>
+
+ <sim>
+
+  <description>German type UB I submarine.</description>
+  <author>Anders Gidenstam</author>
+  <aircraft-version>2013-07-22</aircraft-version>
+
+  <status type="string">alpha</status>
+  <rating>
+   <FDM type="int">2</FDM>
+   <systems type="int">1</systems>
+   <cockpit type="int">1</cockpit>
+   <model type="int">2</model>
+  </rating>
+
+  <flight-model>jsb</flight-model>
+  <aero>UB_I</aero>
+  <!-- The higher rate seems to aide stability. -->
+  <model-hz type="double">240.0</model-hz>
+
+  <presets>
+   <onground type="bool">true</onground>
+   <!-- altitude-agl-ft type="double">6.0</altitude-agl-ft -->
+  </presets>
+  <!-- startup>
+   <splash-texture>Aircraft/MTB_20m/splash.png</splash-texture>
+  </startup -->
+
+  <!-- 3d model -->
+  <model>
+   <path>Aircraft/UB_I/Models/UB_I.xml</path>
+   <livery>
+    <file type="string">UB-16</file>
+   </livery>
+  </model>
+
+  <!-- Views -->
+  <view n="0">
+   <!-- Pilot's position. -->
+   <name>Pilot View</name>
+   <internal>true</internal>
+   <config>
+    <!-- x/y/z == right/up/back -->
+    <x-offset-m type="double">  0.000 </x-offset-m>
+    <y-offset-m type="double">  5.420 </y-offset-m>
+    <z-offset-m type="double"> 12.950 </z-offset-m>
+    <pitch-offset-deg type="double"> 0.0 </pitch-offset-deg>
+   </config>
+  </view>
+  <view n="100">
+   <!-- Periscope view. -->
+   <name>Periscope View</name>
+   <internal>true</internal>
+   <config>
+    <!-- x/y/z == right/up/back -->
+    <from-model type="bool">true</from-model>
+    <from-model-idx type="int">0</from-model-idx>
+    <x-offset-m type="double"> 0.00</x-offset-m>
+    <y-offset-m type="double"> 6.51</y-offset-m>
+    <z-offset-m type="double">13.50</z-offset-m>
+    <pitch-offset-deg type="double">0.0</pitch-offset-deg>
+    <default-field-of-view-deg type="double">65</default-field-of-view-deg>
+   </config>
+  </view>
+  <!-- view n="101">
+   <!- - Moving deck view. - ->
+   <name>Deck View</name>
+   <internal>true</internal>
+   <config>
+    <!- - x/y/z == right/up/back - ->
+    <from-model type="bool">true</from-model>
+    <from-model-idx type="int">0</from-model-idx>
+    <x-offset-m type="double"> -0.5 </x-offset-m>
+    <y-offset-m type="double">  4.4 </y-offset-m>
+    <z-offset-m type="double"> 10.0 </z-offset-m>
+    <pitch-offset-deg type="double"> 0.0 </pitch-offset-deg>
+    <default-field-of-view-deg type="double"> 65 </default-field-of-view-deg>
+   </config>
+  </view -->
+
+  <!-- Move the center of the external views. -->
+  <view n="1">
+   <config>
+    <target-z-offset-m> 13.0 </target-z-offset-m>
+   </config>
+  </view>
+  <view n="2">
+   <config>
+    <target-z-offset-m> 13.0 </target-z-offset-m>
+   </config>
+  </view>
+  <view n="3">
+   <config>
+    <target-z-offset-m> 13.0 </target-z-offset-m>
+   </config>
+  </view>
+  <view n="5">
+   <config>
+    <target-z-offset-m> 13.0 </target-z-offset-m>
+   </config>
+  </view>
+  <view n="6">
+   <config>
+    <target-z-offset-m> 13.0 </target-z-offset-m>
+   </config>
+  </view>
+
+  <chase-distance-m type="double">-80.0</chase-distance-m>
+
+  <sound>
+   <audible>true</audible>
+   <path>Aircraft/UB_I/Sounds/sound.xml</path>
+  </sound>
+
+  <!-- Aircraft specific help. -->
+  <!-- help include="help.xml"/ -->
+
+  <systems>
+   <electrical>
+    <path/>
+   </electrical>
+  </systems>
+  <instrumentation>
+   <path>Aircraft/UB_I/Systems/instrumentation.xml</path>
+  </instrumentation>
+
+  <!-- Armament etc. -->
+  <!-- submodels>
+   <serviceable type="bool">true</serviceable>
+   <path></path>
+  </submodels -->
+
+  <multiplay>
+   <generic>
+    <float n="0" alias="/environment/waves/time-sec"/>
+    <float n="1" alias="/environment/waves/from-deg"/>
+    <float n="2" alias="/environment/waves/amplitude-ft"/>
+    <float n="3" alias="/environment/waves/angular-frequency-rad_sec"/>
+    <float n="4" alias="/environment/waves/wave-number-rad_ft"/>
+    <float n="5" alias="/fdm/jsbsim/hydro/height-agl-ft"/>
+   </generic>
+  </multiplay>
+
+  <max-simtime-per-frame n="0" type="double">0.1</max-simtime-per-frame>
+
+  <menubar>
+   <default>
+    <menu n="100">
+     <label>UB I type submarine</label>
+     <item>
+      <label>About</label>
+      <binding>
+       <command>nasal</command>
+       <script>UBI.about()</script>
+      </binding>
+     </item>
+     <item>
+      <label>Select Livery</label>
+      <binding>
+       <command>nasal</command>
+       <script>aircraft.livery.dialog.toggle()</script>
+      </binding>
+     </item>
+    </menu>
+   </default>
+  </menubar>
+
+ </sim>
+
+ <controls>
+  <engines>
+   <engine n="0">
+    <!-- throttle n="0" alias="/fdm/jsbsim/fcs/throttle-cmd-norm[0]"/>
+    <mixture  n="0" alias="/fdm/jsbsim/fcs/mixture-cmd-norm[0]"/ -->
+   </engine>
+   <engine n="1">
+    <!-- throttle n="0" alias="/fdm/jsbsim/fcs/throttle-cmd-norm[1]"/>
+    <mixture  n="0" alias="/fdm/jsbsim/fcs/mixture-cmd-norm[1]"/ -->
+   </engine>
+   <transmission n="0">
+    <clutch  alias="/fdm/jsbsim/fcs/clutch-cmd-norm[0]"/>    
+    <reverse alias="/fdm/jsbsim/fcs/reverse-cmd-norm[0]"/>    
+   </transmission>
+  </engines>
+  <armament>
+   <training-mode type="bool">false</training-mode> 
+  </armament>
+ </controls>
+ <engines>
+  <propeller n="0">
+   <rpm alias="/fdm/jsbsim/propulsion/propeller[0]/rpm"/>    
+  </propeller>
+ </engines>
+
+ <payload>
+  <weight>
+   <name type="string">Port torpedo</name>
+   <weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[0]"/>
+   <min-lb type="double">0.0</min-lb>
+   <max-lb type="double">1786.0</max-lb>
+  </weight>
+  <weight>
+   <name type="string">Starboard torpedo</name>
+   <weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[1]"/>
+   <min-lb type="double">0.0</min-lb>
+   <max-lb type="double">1786.0</max-lb>
+  </weight>
+
+  <weight>
+   <name type="string">Main ballast tank 1</name>
+   <weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[2]"/>
+   <min-lb type="double">0.0</min-lb>
+   <max-lb type="double">16102.6</max-lb>
+  </weight>
+  <weight>
+   <name type="string">Main ballast tank 2</name>
+   <weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[3]"/>
+   <min-lb type="double">0.0</min-lb>
+   <max-lb type="double">14614.4</max-lb>
+  </weight>
+
+  <weight>
+   <name type="string">Port compensating tank</name>
+   <weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[4]"/>
+   <min-lb type="double">0.0</min-lb>
+   <max-lb type="double">4947.2</max-lb>
+  </weight>
+  <weight>
+   <name type="string">Starboard compensating tank</name>
+   <weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[5]"/>
+   <min-lb type="double">0.0</min-lb>
+   <max-lb type="double">4947.2</max-lb>
+  </weight>
+
+  <weight>
+   <name type="string">Forward trim tank</name>
+   <weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[6]"/>
+   <min-lb type="double">0.0</min-lb>
+   <max-lb type="double">2204.6</max-lb>
+  </weight>
+  <weight>
+   <name type="string">Aft trim tank</name>
+   <weight-lb alias="/fdm/jsbsim/inertia/pointmass-weight-lbs[7]"/>
+   <min-lb type="double">0.0</min-lb>
+   <max-lb type="double">2925.5</max-lb>
+  </weight>
+
+ </payload>
+
+ <!-- instrumentation n="0">
+ </instrumentation -->
+
+ <nasal>
+  <UBI>
+   <file>Aircraft/UB_I/Systems/UBI.nas</file>
+  </UBI>
+  <!-- Walk View -->
+  <walkview>
+   <file>Aircraft/Generic/WalkView/walkview.nas</file>
+  </walkview>
+  <!-- walkviews>
+   <file>Aircraft/MTB_20m/Systems/walk-views.nas</file>
+  </walkviews -->
+ </nasal>
+
+ <input>
+  <keyboard include="Aircraft/Generic/WalkView/walk-view-keys.xml">
+   <!-- Keyboard commands -->
+   <key n="113">
+    <name>q</name>
+    <desc>Engage the main engine</desc>
+    <repeatable type="bool">false</repeatable>
+    <binding>
+     <command>nasal</command>
+     <script>
+       gui.popupTip("Engaging the main engine.");
+       UBI.clutches[0].setDoubleValue(1.0);
+       controls.selectEngine(0);
+     </script>
+    </binding>
+   </key>
+   <key n="81">
+    <name>Q</name>
+    <desc>Disengage the main engine</desc>
+    <repeatable type="bool">false</repeatable>
+    <binding>
+     <command>nasal</command>
+     <script>
+       gui.popupTip("Disengaging the main engine.");
+       UBI.clutches[0].setDoubleValue(0.0);
+       controls.selectEngine(0);
+     </script>
+    </binding>
+   </key>
+
+   <key n="101">
+    <name>e</name>
+    <desc>Blow the main ballast tanks</desc>
+    <repeatable type="bool">false</repeatable>
+    <binding>
+     <command>nasal</command>
+     <script>
+       gui.popupTip("Blowing the main ballast tanks.");
+       setprop("fdm/jsbsim/fcs/mbt-flow-cmd-norm[0]", -1.0);
+       setprop("fdm/jsbsim/fcs/mbt-flow-cmd-norm[1]", -1.0);
+     </script>
+    </binding>
+    <mod-up>
+     <binding>
+      <command>nasal</command>
+      <script>
+        setprop("fdm/jsbsim/fcs/mbt-flow-cmd-norm[0]", 0.0);
+        setprop("fdm/jsbsim/fcs/mbt-flow-cmd-norm[1]", 0.0);
+      </script>
+     </binding>
+    </mod-up>
+   </key>
+   <key n="69">
+    <name>E</name>
+    <desc>Flood the main ballast tanks</desc>
+    <repeatable type="bool">false</repeatable>
+    <binding>
+     <command>nasal</command>
+     <script>
+       gui.popupTip("Flooding the main ballast tanks.");
+       setprop("fdm/jsbsim/fcs/mbt-flow-cmd-norm[0]", 1.0);
+       setprop("fdm/jsbsim/fcs/mbt-flow-cmd-norm[1]", 1.0);
+     </script>
+    </binding>
+    <mod-up>
+     <binding>
+      <command>nasal</command>
+      <script>
+        setprop("fdm/jsbsim/fcs/mbt-flow-cmd-norm[0]", 0.0);
+        setprop("fdm/jsbsim/fcs/mbt-flow-cmd-norm[1]", 0.0);
+      </script>
+     </binding>
+    </mod-up>
+   </key>
+
+  </keyboard>
+ </input>
+
+ <fdm>
+  <jsbsim>
+   <fcs>
+    <clutch-cmd-norm n="0" type="double">1.0</clutch-cmd-norm>
+    <reverse-cmd-norm n="0" type="double">0.0</reverse-cmd-norm>
+   </fcs>
+  </jsbsim>
+ </fdm>
+
+</PropertyList>

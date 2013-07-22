@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+  German type UB I submarine for FlightGear.
+
+  Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+  This file is licensed under the GPL license version 2 or later.
+-->
+<PropertyList>
+
+ <clock>
+  <name>clock</name>
+  <number>0</number>
+ </clock>
+
+ <magnetic-compass>
+  <name>magnetic-compass</name>
+  <number>0</number>
+ </magnetic-compass>
+
+ <adf>
+  <name>adf</name>
+  <number>0</number>
+ </adf>
+
+ <nav-radio>
+  <name>nav</name>
+  <number>0</number>
+ </nav-radio>
+
+</PropertyList>

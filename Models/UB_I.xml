@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<!--
+  German type UB I submarine for FlightGear.
+
+  Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+  This file is licensed under the GPL license version 2 or later.
+-->
+<PropertyList>
+
+ <path>UB_I.ac</path>
+ <offsets>
+  <!-- x/y/z == back/right/up. -->
+  <x-m> 0.00 </x-m>
+  <z-m> 0.00 </z-m>
+ </offsets>
+
+ <!-- Shader effects -->
+ <!-- effect>
+  <inherits-from>Effects/reflect</inherits-from>
+  <object-name></object-name>
+ </effect -->
+
+ <!-- Rembrandt transparency markup. -->
+ <!-- effect>
+  <inherits-from>Effects/model-transparent</inherits-from>
+  <object-name></object-name>
+ </effect -->
+
+ <!-- Livery selection =====================================================-->
+ <!-- animation>
+  <type>material</type>
+  <object-name>hull</object-name>
+  <property-base>sim/model/livery</property-base>
+  <texture-prop>texture</texture-prop>
+  <texture>Liveries/T26.png</texture>
+ </animation -->
+
+ <!-- Instruments ==========================================================-->
+ <model>
+  <name>CT magnetic compass</name>
+  <path>Aircraft/Nordstern/Instruments/MagneticCompass/compass.xml</path>
+  <offsets>
+   <!-- x/y/z == back/right/up -->
+   <x-m>12.7</x-m>
+   <y-m>0.00</y-m>
+   <z-m>4.70</z-m>
+  </offsets>
+  <overlay>
+   <animation n="100">
+    <type>scale</type>
+    <property>constants/zero</property>
+    <x-offset>0.7</x-offset>
+    <y-offset>0.7</y-offset>
+    <z-offset>0.7</z-offset>
+   </animation>
+   <animation>
+    <type>select</type>
+    <object-name>base</object-name>
+    <condition>
+     <property>constants/zero</property>
+    </condition>
+   </animation>
+  </overlay>
+ </model>
+
+ <!-- External lights ======================================================-->
+
+ <!-- External animations ==================================================-->
+ <animation>
+  <type>rotate</type>
+  <object-name>CT_rudder_wheel</object-name>
+  <property>surface-positions/rudder-pos-norm</property>
+  <factor>720.0</factor>
+  <center>
+   <x-m>12.70</x-m>
+   <y-m> 0.00</y-m>
+   <z-m> 4.72</z-m>
+  </center>
+  <axis>
+   <x>1.0</x>
+   <y>0.0</y>
+   <z>0.0</z>
+  </axis>
+ </animation>
+
+ <animation>
+  <type>rotate</type>
+  <object-name>rudder</object-name>
+  <property>surface-positions/rudder-pos-norm</property>
+  <factor>25.0</factor>
+  <center>
+   <x-m>26.90</x-m>
+   <y-m> 0.00</y-m>
+   <z-m> 0.00</z-m>
+  </center>
+  <axis>
+   <x>0.0</x>
+   <y>0.0</y>
+   <z>1.0</z>
+  </axis>
+ </animation>
+
+ <animation>
+  <type>rotate</type>
+  <object-name>diving_rudder</object-name>
+  <property>surface-positions/elevator-pos-norm</property>
+  <factor>25.0</factor>
+  <center>
+   <x-m>27.15</x-m>
+   <y-m> 0.00</y-m>
+   <z-m>-0.35</z-m>
+  </center>
+  <axis>
+   <x>0.0</x>
+   <y>1.0</y>
+   <z>0.0</z>
+  </axis>
+ </animation>
+
+ <!-- Particle effects =====================================================-->
+
+ <!-- Water ================================================================-->
+ <model>
+  <name>Water</name>
+  <path>Aircraft/MTB_20m/Models/water.xml</path>
+  <offsets>
+   <!-- x/y/z == back/right/up -->
+   <x-m>14.00</x-m>
+   <y-m>0.00</y-m>
+   <z-m>1.00</z-m>
+  </offsets>
+ </model>
+
+ <!-- Markers for debugging ================================================-->
+ <!-- model>
+  <name>Markers</name>
+  <path>Aircraft/MTB_20m/Models/markers.xml</path>
+  <offsets>
+   <!- - x/y/z == back/right/up - ->
+   <x-m>12.00</x-m>
+   <y-m>0.00</y-m>
+   <z-m>0.00</z-m>
+  </offsets>
+ </model -->
+
+ <!-- LOD for the model as a whole =========================================-->
+ <animation>
+  <type>range</type>
+  <min-m>0</min-m>
+  <max-m>15000</max-m>
+ </animation>
+
+ <nasal>
+  <load>
+##############################################################################
+# The on-load Nasal is not executed when this file is loaded as the user
+# aircraft.
+##############################################################################
+var rplayer = cmdarg();
+print("LOAD UB_I ", rplayer.getPath());
+
+# Set up property aliases for animations.
+#  Waves.
+rplayer.getNode("environment/waves/time-sec", 1).
+  alias(rplayer.getNode("sim/multiplay/generic/float[0]"));
+rplayer.getNode("environment/waves/from-deg", 1).
+  alias(rplayer.getNode("sim/multiplay/generic/float[1]"));
+rplayer.getNode("environment/waves/amplitude-ft", 1).
+  alias(rplayer.getNode("sim/multiplay/generic/float[2]"));
+rplayer.getNode("environment/waves/angular-frequency-rad_sec", 1).
+  alias(rplayer.getNode("sim/multiplay/generic/float[3]"));
+rplayer.getNode("environment/waves/wave-number-rad_ft", 1).
+  alias(rplayer.getNode("sim/multiplay/generic/float[4]"));
+rplayer.getNode("fdm/jsbsim/hydro/height-agl-ft", 1).
+  alias(rplayer.getNode("sim/multiplay/generic/float[5]"));
+
+# Set up livery support.
+#var livery_update =
+#  aircraft.livery_update.new("Aircraft/UB_I/Models/Liveries", 10);
+
+##############################################################################
+  </load>
+  <unload>
+##############################################################################
+var rplayer = cmdarg();
+print("UNLOAD UB_I ", rplayer.getPath());
+# Stop the livery support.
+livery_update.stop();
+##############################################################################
+  </unload>
+ </nasal>
+
+</PropertyList>

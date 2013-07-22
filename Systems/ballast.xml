@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+  German type UB I submarine "flight" model for JSBSim.
+
+    Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+  
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+  
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  
+-->
+<system name="Ballast">
+
+ <documentation>
+ </documentation>
+ <documentation>
+ </documentation>
+
+ <!-- 
+      Temporary control properties. Range [-1,1].
+ -->
+ <property value="0.0">fcs/mbt-flow-cmd-norm[0]</property>
+ <property value="0.0">fcs/mbt-flow-cmd-norm[1]</property>
+
+
+ <property value="258.0">ballast/main[0]/capacity-ft3</property>
+ <property value="234.1">ballast/main[1]/capacity-ft3</property>
+
+ <!-- The main ballast tanks ================================================-->
+
+ <channel name="Main ballast tank 1">
+
+  <fcs_function name="ballast/main[0]/flow-ft3">
+   <function>
+    <product>
+     <value>5.0</value>
+     <sum>
+      <product>
+       <lt>
+        <property>fcs/mbt-flow-cmd-norm[0]</property>
+        <value>0.0</value>
+       </lt>
+       <gt>
+        <property>ballast/main[0]/content-ft3</property>
+        <value>0.0</value>
+       </gt>
+      </product>
+      <product>
+       <gt>
+        <property>fcs/mbt-flow-cmd-norm[0]</property>
+        <value>0.0</value>
+       </gt>
+       <lt>
+        <property>ballast/main[0]/content-ft3</property>
+        <property>ballast/main[0]/capacity-ft3</property>
+       </lt>
+      </product>
+     </sum>
+     <property>fcs/mbt-flow-cmd-norm[0]</property>
+    </product>
+   </function>
+  </fcs_function>
+
+  <integrator name="ballast/main[0]/content-ft3">
+   <description>
+    Content in ft^3.
+   </description>
+   <input>ballast/main[0]/flow-ft3</input>
+   <c1>1.0</c1>
+   <clipto>
+    <min>0.0</min>
+    <max>ballast/main[0]/capacity-ft3</max>
+   </clipto>
+  </integrator>
+
+  <fcs_function name="ballast/main[0]/content-lbs">
+   <function>
+    <product>
+     <property>hydro/environment/rho-lbs_ft3</property>
+     <property>ballast/main[0]/content-ft3</property>
+    </product>
+   </function>
+   <output>inertia/pointmass-weight-lbs[2]</output>
+  </fcs_function>
+
+ </channel>
+
+ <channel name="Main ballast tank 2">
+
+  <fcs_function name="ballast/main[1]/flow-ft3">
+   <function>
+    <product>
+     <value>5.0</value>
+     <sum>
+      <product>
+       <lt>
+        <property>fcs/mbt-flow-cmd-norm[1]</property>
+        <value>0.0</value>
+       </lt>
+       <gt>
+        <property>ballast/main[1]/content-ft3</property>
+        <value>0.0</value>
+       </gt>
+      </product>
+      <product>
+       <gt>
+        <property>fcs/mbt-flow-cmd-norm[1]</property>
+        <value>0.0</value>
+       </gt>
+       <lt>
+        <property>ballast/main[1]/content-ft3</property>
+        <property>ballast/main[1]/capacity-ft3</property>
+       </lt>
+      </product>
+     </sum>
+     <property>fcs/mbt-flow-cmd-norm[1]</property>
+    </product>
+   </function>
+  </fcs_function>
+
+  <integrator name="ballast/main[1]/content-ft3">
+   <description>
+    Content in ft^3.
+   </description>
+   <input>ballast/main[1]/flow-ft3</input>
+   <c1>1.0</c1>
+   <clipto>
+    <min>0.0</min>
+    <max>ballast/main[1]/capacity-ft3</max>
+   </clipto>
+  </integrator>
+
+  <fcs_function name="ballast/main[1]/content-lbs">
+   <function>
+    <product>
+     <property>hydro/environment/rho-lbs_ft3</property>
+     <property>ballast/main[1]/content-ft3</property>
+    </product>
+   </function>
+   <output>inertia/pointmass-weight-lbs[3]</output>
+  </fcs_function>
+
+ </channel>
+
+ <!--                ========================================================-->
+
+ <channel name="">
+
+
+ </channel>
+
+ <!--                  ======================================================-->
+
+ <channel name="">
+
+
+
+ </channel>
+
+</system>
