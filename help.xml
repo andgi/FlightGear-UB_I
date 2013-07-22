@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--
+  German type UB I submarine for FlightGear.
+
+  Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+  This file is licensed under the GPL license version 2 or later.
+-->
+<PropertyList>
+
+ <title>Type UB I submarine</title>
+ <!-- Specific keys -->
+ <key>
+  <name>q/Q</name>
+  <desc>Engage/disengage the main engine clutch</desc>
+ </key>
+ <key>
+  <name>e/E</name>
+  <desc>Blow/flood the main ballast tanks (while pressed).</desc>
+ </key>
+
+ <!-- Handling instructions. -->
+ <text>
+ <!-- Real data -->
+ ____________________Limitations____________________
+ Test depth: 50 m (90 ft in FlightGear)
+
+<!--
+ ______________FlightGear Pilot's Notes_____________
+
+ http://wiki.flightgear.org/index.php/UB_I
+-->
+ </text>
+</PropertyList>

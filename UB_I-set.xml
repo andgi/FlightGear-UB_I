@@ -121,7 +121,7 @@
   </sound>
 
   <!-- Aircraft specific help. -->
-  <!-- help include="help.xml"/ -->
+  <help include="help.xml"/>
 
   <systems>
    <electrical>
@@ -153,7 +153,7 @@
 
   <menubar>
    <default>
-    <menu n="100">
+    <!-- menu n="100">
      <label>UB I type submarine</label>
      <item>
       <label>About</label>
@@ -169,7 +169,7 @@
        <script>aircraft.livery.dialog.toggle()</script>
       </binding>
      </item>
-    </menu>
+    </menu -->
    </default>
   </menubar>
 
