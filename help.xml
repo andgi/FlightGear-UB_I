@@ -18,6 +18,23 @@
   <desc>Blow/flood the main ballast tanks (while pressed).</desc>
  </key>
 
+ <key>
+  <name>w</name>
+  <desc>Walk view: walk forward, +shift to run.</desc>
+ </key>
+ <key>
+  <name>s</name>
+  <desc>Walk view: walk backward.</desc>
+ </key>
+ <key>
+  <name>a</name>
+  <desc>Walk view: side step left, +shift to run.</desc>
+ </key>
+ <key>
+  <name>d</name>
+  <desc>Walk view: side step right, +shift to run.</desc>
+ </key>
+
  <!-- Handling instructions. -->
  <text>
  <!-- Real data -->

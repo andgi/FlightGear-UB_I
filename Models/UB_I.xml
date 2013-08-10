@@ -35,6 +35,12 @@
   <texture>Liveries/T26.png</texture>
  </animation -->
 
+ <!-- Interior. -->
+ <model>
+  <name>Interior</name>
+  <path>Aircraft/UB_I/Models/Interior/interior.ac</path>
+ </model>
+
  <!-- Instruments ==========================================================-->
  <model>
   <name>CT magnetic compass</name>
@@ -114,6 +120,19 @@
    <x>0.0</x>
    <y>1.0</y>
    <z>0.0</z>
+  </axis>
+ </animation>
+
+ <animation>
+  <type>translate</type>
+  <object-name>periscope</object-name>
+  <property>surface-positions/flap-pos-norm</property>
+  <factor>2.0</factor>
+  <offset-m>0.0</offset-m>
+  <axis>
+   <x>0.0</x>
+   <y>0.0</y>
+   <z>1.0</z>
   </axis>
  </animation>
 
