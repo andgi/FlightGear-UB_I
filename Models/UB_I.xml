@@ -38,7 +38,7 @@
  <!-- Interior. -->
  <model>
   <name>Interior</name>
-  <path>Aircraft/UB_I/Models/Interior/interior.ac</path>
+  <path>Aircraft/UB_I/Models/Interior/interior.xml</path>
  </model>
 
  <!-- Instruments ==========================================================-->
@@ -76,7 +76,7 @@
   <type>rotate</type>
   <object-name>CT_rudder_wheel</object-name>
   <property>surface-positions/rudder-pos-norm</property>
-  <factor>720.0</factor>
+  <factor>-720.0</factor>
   <center>
    <x-m>12.70</x-m>
    <y-m> 0.00</y-m>

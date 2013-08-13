@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!--
+  German type UB I submarine for FlightGear.
+
+  Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+  This file is licensed under the GPL license version 2 or later.
+-->
+<PropertyList>
+
+ <path>interior.ac</path>
+ <offsets>
+  <!-- x/y/z == back/right/up. -->
+  <x-m> 0.00 </x-m>
+  <z-m> 0.00 </z-m>
+ </offsets>
+
+ <!-- Shader effects -->
+ <!-- effect>
+  <inherits-from>Effects/reflect</inherits-from>
+  <object-name></object-name>
+ </effect -->
+
+ <!-- Rembrandt transparency markup. -->
+ <!-- effect>
+  <inherits-from>Effects/model-transparent</inherits-from>
+  <object-name></object-name>
+ </effect -->
+
+ <!-- Instruments ==========================================================-->
+ <model>
+  <name>CR magnetic compass</name>
+  <path>Aircraft/Nordstern/Instruments/MagneticCompass/compass.xml</path>
+  <offsets>
+   <!-- x/y/z == back/right/up -->
+   <x-m>11.08</x-m>
+   <y-m>-0.20</y-m>
+   <z-m> 0.43</z-m>
+  </offsets>
+  <overlay>
+   <animation n="100">
+    <type>scale</type>
+    <property>constants/zero</property>
+    <x-offset>0.7</x-offset>
+    <y-offset>0.7</y-offset>
+    <z-offset>0.7</z-offset>
+   </animation>
+   <animation>
+    <type>select</type>
+    <object-name>base</object-name>
+    <condition>
+     <property>constants/zero</property>
+    </condition>
+   </animation>
+  </overlay>
+ </model>
+
+ <!-- Control animations ===================================================-->
+ <animation>
+  <type>rotate</type>
+  <object-name>CR_rudder_wheel</object-name>
+  <property>surface-positions/rudder-pos-norm</property>
+  <factor>-720.0</factor>
+  <center>
+   <x-m>11.08</x-m>
+   <y-m>-0.20</y-m>
+   <z-m> 0.45</z-m>
+  </center>
+  <axis>
+   <x>1.0</x>
+   <y>0.0</y>
+   <z>0.0</z>
+  </axis>
+ </animation>
+
+ <animation>
+  <type>rotate</type>
+  <object-name>CR_diving_wheel</object-name>
+  <property>surface-positions/elevator-pos-norm</property>
+  <factor>-720.0</factor>
+  <center>
+   <x-m>11.64</x-m>
+   <y-m> 0.84</y-m>
+   <z-m> 0.45</z-m>
+  </center>
+  <axis>
+   <x>0.0</x>
+   <y>1.0</y>
+   <z>0.0</z>
+  </axis>
+ </animation>
+
+ <!-- LOD for the model as a whole =========================================-->
+ <animation>
+  <type>range</type>
+  <min-m>0</min-m>
+  <max-m>50</max-m>
+ </animation>
+
+</PropertyList>

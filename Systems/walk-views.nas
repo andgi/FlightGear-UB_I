@@ -12,8 +12,8 @@
 
 # Deck
 
-# Control room
-var controlConstraint = walkview.makeUnionConstraint
+# Interior room
+var interiorConstraint = walkview.makeUnionConstraint
    (
     [
      # Torpedo compartment
@@ -23,7 +23,11 @@ var controlConstraint = walkview.makeUnionConstraint
      walkview.SlopingYAlignedPlane.new([ 8.75, -0.40, -0.45],
                                        [11.00,  0.40, -0.45]),
      # Control room
-     walkview.SlopingYAlignedPlane.new([11.00, -0.50, -0.45],
+     walkview.SlopingYAlignedPlane.new([11.00,  0.10, -0.45],
+                                       [11.30,  0.65, -0.45]),
+     walkview.SlopingYAlignedPlane.new([11.30, -0.50, -0.45],
+                                       [11.90,  0.65, -0.45]),
+     walkview.SlopingYAlignedPlane.new([11.90, -0.50, -0.45],
                                        [15.40,  0.50, -0.45]),
      # Aft battery compartment
      walkview.SlopingYAlignedPlane.new([15.40, -0.40, -0.45],
@@ -48,7 +52,7 @@ var controlConstraint = walkview.makeUnionConstraint
 # Create the view managers.
 var crew_walker =
         walkview.Walker.new("Walk View",
-                            controlConstraint);
+                            interiorConstraint);
 #                           [walkview.JSBSimPointmass.new(29)]);
 
 crew_walker.set_eye_height(1.70);
