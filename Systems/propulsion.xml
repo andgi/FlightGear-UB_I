@@ -3,7 +3,7 @@
 
   German type UB I submarine "flight" model for JSBSim.
 
-    Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+    Copyright (C) 2013 - 2014  Anders Gidenstam  (anders(at)gidenstam.org)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -74,19 +74,6 @@
    <test logic="AND" value="1.0">
      fcs/clutch-cmd-norm[1] GT 0.5
    </test>
-  </switch>
-
-  <switch name="propulsion/engine[2]/clutch-pos-norm">
-   <default value="0.0"/>
-   <test logic="AND" value="1.0">
-     fcs/clutch-cmd-norm[0] LT -0.5
-   </test>
-  </switch>
-  <switch name="propulsion/engine[3]/clutch-pos-norm">
-   <default value="0.0"/>
-   <test logic="AND" value="1.0">
-     fcs/clutch-cmd-norm[1] LT -0.5
-   </test>
   </switch -->
 
  </channel>
@@ -105,8 +92,8 @@
      </product>
      <!-- product>
       <value>1.0</value>
-      <property>propulsion/engine[2]/clutch-pos-norm</property>
-      <property>propulsion/engine[2]/engine-rpm</property>
+      <property>propulsion/engine[1]/clutch-pos-norm</property>
+      <property>propulsion/engine[1]/engine-rpm</property>
      </product -->
     </sum>
    </function>
@@ -165,7 +152,7 @@
   <fcs_function name="propulsion/propeller[0]/power-coefficient">
    <function>
     <product>
-     <value>1.0</value>
+     <value>0.85</value>
      <table>
       <independentVar lookup="row">propulsion/propeller[0]/advance-ratio</independentVar>
       <tableData>
