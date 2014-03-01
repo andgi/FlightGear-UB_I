@@ -2,7 +2,7 @@
 ##
 ## German type UB I submarine for FlightGear.
 ##
-##  Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+##  Copyright (C) 2013 - 2014  Anders Gidenstam  (anders(at)gidenstam.org)
 ##  This file is licensed under the GPL license v2 or later.
 ##
 ###############################################################################
@@ -70,9 +70,10 @@ var right = screen.display.new(-300, 10);
 left.add("/fdm/jsbsim/sim-time-sec");
 left.add("/orientation/heading-magnetic-deg");
 left.add("/fdm/jsbsim/hydro/true-course-deg");
-left.add("/fdm/jsbsim/hydro/pitch-deg");
-left.add("/fdm/jsbsim/hydro/height-agl-ft");
-left.add("/fdm/jsbsim/hydro/roll-deg");
+left.add("/fdm/jsbsim/hydro/hull/pitch-deg");
+left.add("/fdm/jsbsim/hydro/hull/height-agl-ft");
+left.add("/fdm/jsbsim/hydro/hull/roll-deg");
+left.add("/fdm/jsbsim/hydro/hull/wave-influence-norm");
 left.add("/fdm/jsbsim/hydro/alpha-deg");
 left.add("/fdm/jsbsim/hydro/beta-deg");
 left.add("/fdm/jsbsim/inertia/cg-x-in");
@@ -115,6 +116,10 @@ right.add("/fdm/jsbsim/propulsion/engine[0]/power-hp");
 right.add("/fdm/jsbsim/propulsion/propeller[0]/power-required-hp");
 right.add("/fdm/jsbsim/propulsion/propeller[0]/thrust-lbs");
 right.add("/fdm/jsbsim/propulsion/propeller[0]/advance-ratio");
+right.add("/fdm/jsbsim/ballast/main[0]/content-lbs");
+right.add("/fdm/jsbsim/ballast/main[1]/content-lbs");
+right.add("/fdm/jsbsim/inertia/pointmass-weight-lbs[6]");
+right.add("/fdm/jsbsim/inertia/pointmass-weight-lbs[7]");
 #right.add("/fdm/jsbsim/");
 
 ###############################################################################

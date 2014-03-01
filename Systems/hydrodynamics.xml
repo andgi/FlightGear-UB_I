@@ -3,7 +3,7 @@
 
   Hydrodynamics section for JSBSim.
 
-    Copyright (C) 2008 - 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+    Copyright (C) 2008 - 2014  Anders Gidenstam  (anders(at)gidenstam.org)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -307,24 +307,25 @@
     angular frequency.
    </description>
    <function>
-    <quotient>
-     <sum>
-      <product>
-       <value>-6.2831853</value>
-       <property>hydro/vbx-fps</property>
-       <property>hydro/environment/wave/hull-x-factor</property>
-      </product>
-      <product>
-       <value>-6.2831853</value>
-       <property>hydro/vby-fps</property>
-       <property>hydro/environment/wave/hull-y-factor</property>
-      </product>
-     </sum>
-     <max>
-      <value>0.001</value>
-      <property>hydro/environment/wave-length-ft</property>
-     </max>       
-    </quotient>
+    <product>
+     <value>6.2831853</value>
+     <quotient>
+      <sum>
+       <product>
+        <property>hydro/vbx-fps</property>
+        <property>hydro/environment/wave/hull-x-factor</property>
+       </product>
+       <product>
+        <property>hydro/vby-fps</property>
+        <property>hydro/environment/wave/hull-y-factor</property>
+       </product>
+      </sum>
+      <max>
+       <value>0.001</value>
+       <property>hydro/environment/wave-length-ft</property>
+      </max>
+     </quotient>
+    </product>
    </function>
   </fcs_function>
 
@@ -343,19 +344,22 @@
    <function>
     <sum>
      <!-- Deep water gravity wave. -->
-     <pow>
-      <quotient>
-       <product>
-        <value>6.2831853</value>
-        <property>hydro/environment/gravity-ft_sec2</property>
-       </product>
-       <max>
-        <value>0.001</value>
-        <property>hydro/environment/wave-length-ft</property>
-       </max>
-      </quotient>
-      <value>0.5</value>
-     </pow>
+     <product>
+      <value>-1.0</value> <!-- Note: Set to 0 to make the waves stationary. -->
+      <pow>
+       <quotient>
+        <product>
+         <value>6.2831853</value>
+         <property>hydro/environment/gravity-ft_sec2</property>
+        </product>
+        <max>
+         <value>0.001</value>
+         <property>hydro/environment/wave-length-ft</property>
+        </max>
+       </quotient>
+       <value>0.5</value>
+      </pow>
+     </product>
      <!-- Mix in hull-angular-offset-rad to simplify uses below. -->
      <quotient>
       <property>hydro/environment/wave/hull-angular-offset-rad</property>
@@ -537,7 +541,7 @@
         <cos>
          <difference>
           <product>
-           <value>0.5</value>
+           <value>-0.5</value>
            <property>metrics/hydro-beam-ft</property>
            <property>hydro/environment/wave/hull-y-factor</property>
            <property>hydro/environment/wave/wave-number-rad_ft</property>
@@ -554,7 +558,7 @@
         <cos>
          <difference>
           <product>
-           <value>-0.5</value>
+           <value>0.5</value>
            <property>metrics/hydro-beam-ft</property>
            <property>hydro/environment/wave/hull-y-factor</property>
            <property>hydro/environment/wave/wave-number-rad_ft</property>
@@ -682,14 +686,12 @@
   </fcs_function>
 
   <fcs_function name="hydro/tmp/beta-rad">
+   <!-- Needed to normalize the beta range to +/-PI. -->
    <function>
-    <!-- mod -->
-     <difference>
-      <property> hydro/true-course-rad </property>
-      <property> attitude/psi-rad </property>
-     </difference>
-     <!-- value> 3.1415927 </value>
-    </mod -->
+    <difference>
+     <property> hydro/true-course-rad </property>
+     <property> attitude/psi-rad </property>
+    </difference>
    </function>
   </fcs_function>
 

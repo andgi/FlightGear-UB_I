@@ -3,7 +3,7 @@
 
   German type UB I submarine "flight" model for JSBSim.
 
-    Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+    Copyright (C) 2013 - 2014  Anders Gidenstam  (anders(at)gidenstam.org)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -218,6 +218,40 @@
 
  <channel name="Effective hull position and orientation">
 
+  <fcs_function name="hydro/hull/wave-influence-norm">
+   <description>
+    The influence of waves on the hull. The influence decreases with distance
+    from the surface and is negligible at depths below half of the wave length.
+   </description>
+   <function>
+    <pow>
+     <max>
+      <value>0.0</value>
+      <difference>
+       <value>1.0</value>
+       <quotient>
+        <product>
+         <value>-1.0</value>
+         <min>
+          <value>0.0</value>
+          <property>hydro/height-agl-ft</property>
+         </min>
+        </product>
+        <product>
+         <value>0.5</value>
+         <max>
+          <property>hydro/environment/wave-length-ft</property>
+          <value>0.1</value>
+         </max>
+        </product>
+       </quotient>
+      </difference>
+     </max>
+     <value>2.0</value>
+    </pow>
+   </function>
+  </fcs_function>
+
   <fcs_function name="hydro/hull/height-agl-ft">
    <description>
     The hull height with waves and squat due to the transverse wave applied.
@@ -227,6 +261,7 @@
      <property>hydro/height-agl-ft</property>
      <product>
       <value>-1.0</value>
+      <property>hydro/hull/wave-influence-norm</property>
       <max>
        <value>-100.0</value>
        <min>
@@ -255,7 +290,8 @@
     <sum>
      <property>hydro/pitch-deg</property>
      <product>
-      <value>-1.0</value>
+      <value>1.0</value>
+      <property>hydro/hull/wave-influence-norm</property>
       <max>
        <value>-30.0</value>
        <min>
@@ -266,6 +302,7 @@
      </product>
      <product>
       <value>-1.0</value>
+      <property>hydro/hull/wave-influence-norm</property>
       <max>
        <value>-30.0</value>
        <min>
@@ -287,11 +324,12 @@
      <property>hydro/roll-deg</property>
      <product>
       <value>1.0</value>
+      <property>hydro/hull/wave-influence-norm</property>
       <max>
-       <value>-80.0</value>
+       <value>-50.0</value>
        <min>
         <property>hydro/orientation/wave-roll-trim-change-deg</property>
-        <value>80.0</value>
+        <value>50.0</value>
        </min>
       </max>
      </product>
@@ -747,7 +785,13 @@
   <fcs_function name="hydro/damping-lift-lbs">
    <function>
     <product>
-     <value>1.0</value>
+     <table>
+      <independentVar lookup="row">sim-time-sec</independentVar>
+      <tableData>
+        0.0 10.0
+       10.0  3.0
+      </tableData>
+     </table>
      <value>2000.0</value> <!-- Guess -->
      <property>velocities/v-down-fps</property>
     </product>
@@ -1121,7 +1165,7 @@
   <fcs_function name="hydro/damping-pitch-moment-lbsft">
    <function>
     <product>
-     <value>1.0</value>
+     <value>1.5</value>
      <value>-2500000.0</value> <!-- Guess -->
      <property>velocities/thetadot-rad_sec</property>
     </product>
