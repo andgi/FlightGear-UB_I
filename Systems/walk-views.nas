@@ -17,7 +17,9 @@ var interiorConstraint = walkview.makeUnionConstraint
    (
     [
      # Torpedo compartment
-     walkview.SlopingYAlignedPlane.new([ 5.00, -0.20, -0.25],
+     #walkview.SlopingYAlignedPlane.new([ 5.30, -0.20, -0.25],
+     #                                  [ 8.75,  0.20, -0.25]),
+     walkview.SlopingYAlignedPlane.new([ 8.55, -0.20, -0.25],
                                        [ 8.75,  0.20, -0.25]),
      # Fwd battery compartment
      walkview.SlopingYAlignedPlane.new([ 8.75, -0.40, -0.45],

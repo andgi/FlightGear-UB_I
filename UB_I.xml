@@ -3,7 +3,7 @@
 
   German type UB I submarine "flight" model for JSBSim.
 
-    Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+    Copyright (C) 2013 - 2014  Anders Gidenstam  (anders(at)gidenstam.org)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
   <email>anders at gidenstam dot org</email>
 
   <filecreationdate>2013-07-08</filecreationdate>
-  <version>$Id$</version>
+  <version>2014-03-01</version>
 
   <description>Models a German type UB I submarine.</description>
 
@@ -99,7 +99,7 @@
        were also converted to mine layers similar to the UC I type in late
        1916 or early 1917. This occured well after the introduction of the
        UC I class, possibly to replace lost UC Is.
-       It is possible only UB 12 was converted.
+       It is possible only UB 12 was, in fact, converted.
  </documentation>
 
  <documentation>
@@ -170,7 +170,7 @@
   <!-- emptywt unit="KG">80254</emptywt -->
   <emptywt unit="KG">73800</emptywt>
   <location name="CG" unit="M">
-   <x>13.75</x>
+   <x>13.70</x>
    <y> 0.00</y>
    <z> 0.00</z>
   </location>

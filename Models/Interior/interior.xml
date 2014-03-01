@@ -2,7 +2,7 @@
 <!--
   German type UB I submarine for FlightGear.
 
-  Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+  Copyright (C) 2013 - 2014  Anders Gidenstam  (anders(at)gidenstam.org)
   This file is licensed under the GPL license version 2 or later.
 -->
 <PropertyList>
@@ -25,6 +25,16 @@
   <inherits-from>Effects/model-transparent</inherits-from>
   <object-name></object-name>
  </effect -->
+
+ <model>
+  <path>Aircraft/UB_I/Models/Interior/frames.ac</path>
+  <offsets>
+   <!-- x/y/z == back/right/up -->
+   <x-m>0.00</x-m>
+   <y-m>0.00</y-m>
+   <z-m>0.00</z-m>
+  </offsets>
+ </model>
 
  <!-- Instruments ==========================================================-->
  <model>

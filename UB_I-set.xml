@@ -2,7 +2,7 @@
 <!--
   German type UB I submarine for FlightGear.
 
-  Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+  Copyright (C) 2013 - 2014  Anders Gidenstam  (anders(at)gidenstam.org)
   This file is licensed under the GPL license version 2 or later.
 -->
 <PropertyList>
@@ -11,7 +11,7 @@
 
   <description>German type UB I submarine.</description>
   <author>Anders Gidenstam</author>
-  <aircraft-version>2013-07-22</aircraft-version>
+  <aircraft-version>2014-03-01</aircraft-version>
 
   <status type="string">alpha</status>
   <rating>
@@ -24,7 +24,7 @@
   <flight-model>jsb</flight-model>
   <aero>UB_I</aero>
   <!-- The higher rate seems to aide stability. -->
-  <model-hz type="double">240.0</model-hz>
+  <model-hz type="double">480.0</model-hz>
 
   <presets>
    <onground type="bool">true</onground>
