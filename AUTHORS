@@ -1,0 +1,14 @@
+Anders Gidenstam  (anders(at)gidenstam.org)
+  - UB I FlightGear configuration
+  - UB I Flight/Hydrodynamics Model configuration
+  - UB I 3d model
+
+The model borrows content from the following authors' contributions
+to FlightGear:
+
+
+Dependencies (i.e. install these aircraft):
+
+Aircraft/MTB_20m        (Aircraft/MTB_20m/Models/water.xml)
+
+Aircraft/Nordstern      (Aircraft/Nordstern/Instruments/MagneticCompass/compass.xml)
