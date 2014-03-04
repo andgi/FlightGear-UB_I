@@ -48,6 +48,10 @@ var _UBI_initialized = 0;
 setlistener("/sim/signals/fdm-initialized", func {
     if (_UBI_initialized) return;
     #aircraft.livery.init("Aircraft/UB_I/Models/Liveries");
+
+    setprop("surface-positions/hatch-pos-norm", 1.0);
+    setprop("surface-positions/periscope-extension-norm", 0.0);
+
     settimer(ground, 0.0);
     print("Hydrodynamics initialized.");
     _UBI_initialized = 1;
@@ -61,6 +65,63 @@ var clutches =
 #var reversers =
 #    [props.globals.getNode("controls/engines/transmission[0]/reverse"),
 #     props.globals.getNode("controls/engines/transmission[1]/reverse")];
+
+###############################################################################
+# Periscope handling.
+var periscope_view_handler = {
+    view_name : "Periscope View",
+    init : func {
+        me.view_name = "Periscope View";
+        me.view  = view.views[view.indexof(me.view_name)];
+        me.shown = 0;
+    },
+    start  : func {
+        if (!me.shown) {
+        }
+        me.shown = 1;
+    },
+    stop   : func {
+        if (me.shown) {
+        }
+        me.shown = 0;
+    },
+    update : func {
+        var cur = props.globals.getNode("/sim/current-view");
+        var heading = cur.getNode("heading-offset-deg").getValue();
+        var extension = getprop("surface-positions/periscope-extension-norm");
+
+        setprop("surface-positions/periscope-rotation-deg", heading);
+        cur.getNode("x-offset-m").setValue(0.00);
+        cur.getNode("y-offset-m").setValue(5.68 + 3.1*extension);
+        cur.getNode("z-offset-m").setValue(13.50);
+        cur.getNode("pitch-offset-deg").setValue(0.0);
+
+        return 0.0;
+    }
+};
+
+view.manager.register(view.indexof(periscope_view_handler.view_name),
+                      periscope_view_handler);
+
+# Temporary persicope control.
+var cmdId = 0;
+var movePeriscope = func(id, d) {
+    if (id != cmdId) return;
+    var p = "surface-positions/periscope-extension-norm";
+    var n = controls.slewProp(p, d);
+    n = math.max(n, 0.0);
+    n = math.min(n, 1.0);
+    setprop(p, n);
+    settimer(func { movePeriscope(id, d); }, 0.0);
+}
+
+controls.flapsDown = func(step) {
+    cmdId += 1;
+    if (step != 0) {
+        movePeriscope(cmdId, -0.1*step);
+    }
+}
+
 
 ###############################################################################
 # On-screen displays

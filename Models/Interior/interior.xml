@@ -99,6 +99,32 @@
   </axis>
  </animation>
 
+ <!-- Walker animations ====================================================-->
+ <animation>
+  <type>pick</type>
+  <object-name>CT_ladder_lower</object-name>
+  <action>
+   <button>0</button>
+   <repeatable>false</repeatable>
+   <binding>
+    <command>nasal</command>
+    <script>walkviews.climbLadder(0);</script>
+   </binding>
+  </action>
+ </animation>
+ <animation>
+  <type>pick</type>
+  <object-name>CT_ladder_upper</object-name>
+  <action>
+   <button>0</button>
+   <repeatable>false</repeatable>
+   <binding>
+    <command>nasal</command>
+    <script>walkviews.climbLadder(1);</script>
+   </binding>
+  </action>
+ </animation>
+
  <!-- LOD for the model as a whole =========================================-->
  <animation>
   <type>range</type>

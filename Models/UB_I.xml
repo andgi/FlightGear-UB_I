@@ -2,7 +2,7 @@
 <!--
   German type UB I submarine for FlightGear.
 
-  Copyright (C) 2013  Anders Gidenstam  (anders(at)gidenstam.org)
+  Copyright (C) 2013 - 2014  Anders Gidenstam  (anders(at)gidenstam.org)
   This file is licensed under the GPL license version 2 or later.
 -->
 <PropertyList>
@@ -126,13 +126,68 @@
  <animation>
   <type>translate</type>
   <object-name>periscope</object-name>
-  <property>surface-positions/flap-pos-norm</property>
-  <factor>2.0</factor>
+  <property>surface-positions/periscope-extension-norm</property>
+  <factor>3.1</factor>
   <offset-m>0.0</offset-m>
   <axis>
    <x>0.0</x>
    <y>0.0</y>
    <z>1.0</z>
+  </axis>
+ </animation>
+ <animation>
+  <type>rotate</type>
+  <object-name>periscope</object-name>
+  <property>surface-positions/periscope-rotation-deg</property>
+  <factor>1.0</factor>
+  <offset-m>0.0</offset-m>
+  <center>
+   <x-m>13.50</x-m>
+   <y-m> 0.00</y-m>
+   <z-m> 0.00</z-m>
+  </center>
+  <axis>
+   <x>0.0</x>
+   <y>0.0</y>
+   <z>1.0</z>
+  </axis>
+ </animation>
+
+ <animation>
+  <type>pick</type>
+  <object-name>hatch</object-name>
+  <action>
+   <button>0</button>
+   <repeatable>false</repeatable>
+   <binding>
+    <command>nasal</command>
+    <script>
+      if (getprop("surface-positions/hatch-pos-norm") == 0.0) {
+          # Open the hatch if safely surfaced.
+          if (getprop("fdm/jsbsim/hydro/height-agl-ft") > -6.0) {
+              interpolate("surface-positions/hatch-pos-norm", 1.0, 2.0);
+          }
+      } else {
+          interpolate("surface-positions/hatch-pos-norm", 0.0, 2.0);
+      }
+    </script>
+   </binding>
+  </action>
+ </animation>
+ <animation>
+  <type>rotate</type>
+  <object-name>hatch</object-name>
+  <property>surface-positions/hatch-pos-norm</property>
+  <factor>-70.0</factor>
+  <center>
+   <x-m>13.59</x-m>
+   <y-m> 0.00</y-m>
+   <z-m> 3.92</z-m>
+  </center>
+  <axis>
+   <x>0.0</x>
+   <y>1.0</y>
+   <z>0.0</z>
   </axis>
  </animation>
 
@@ -149,18 +204,6 @@
    <z-m>1.00</z-m>
   </offsets>
  </model>
-
- <!-- Markers for debugging ================================================-->
- <!-- model>
-  <name>Markers</name>
-  <path>Aircraft/MTB_20m/Models/markers.xml</path>
-  <offsets>
-   <!- - x/y/z == back/right/up - ->
-   <x-m>12.00</x-m>
-   <y-m>0.00</y-m>
-   <z-m>0.00</z-m>
-  </offsets>
- </model -->
 
  <!-- LOD for the model as a whole =========================================-->
  <animation>
