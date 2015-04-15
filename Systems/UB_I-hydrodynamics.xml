@@ -368,8 +368,8 @@
   <fcs_function name="hydro/hull-drag-lbs">
    <function>
     <description>
-      Drag due to displacement of hull.
-      Estimated with DATCOM.
+     Drag due to displacement of hull. Estimated with DATCOM.
+     FIXME: Should be split into Drag and Fbz components.
     </description>
     <product>
      <property>hydro/qbar-psf</property>
@@ -415,6 +415,7 @@
    <function>
     <description>
      Drag due to the hydroplanes. Estimated using DATCOM.
+     FIXME: Should be split into Drag and Fbz components.
     </description>
     <product>
      <abs><property>hydro/qbar-u-psf</property></abs>
@@ -467,8 +468,9 @@
   <fcs_function name="hydro/fin-drag-lbs">
    <function>
     <description>
-      Drag due to the vertical fin.
-      Estimated with DATCOM.
+     Drag due to the vertical fin.
+     Estimated with DATCOM.
+     FIXME: Should be split into Drag and Fbz components.
     </description>
     <product>
      <value>0.5</value> <!-- One fin only. -->
@@ -695,6 +697,7 @@
    <function>
     <description>
      Lift due to alpha. Estimated using DATCOM.
+     FIXME: Should be split into Drag and Fbz components.
     </description>
     <product>
      <abs><property>hydro/qbar-u-psf</property></abs>
@@ -733,6 +736,7 @@
    <function>
     <description>
      Lift due to alpha. Estimated using DATCOM.
+     FIXME: Should be split into Drag and Fbz components.
     </description>
     <product>
      <abs><property>hydro/qbar-u-psf</property></abs>
@@ -786,7 +790,7 @@
    <function>
     <product>
      <table>
-      <independentVar lookup="row">sim-time-sec</independentVar>
+      <independentVar lookup="row">simulation/sim-time-sec</independentVar>
       <tableData>
         0.0 10.0
        10.0  3.0
