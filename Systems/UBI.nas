@@ -2,7 +2,7 @@
 ##
 ## German type UB I submarine for FlightGear.
 ##
-##  Copyright (C) 2013 - 2014  Anders Gidenstam  (anders(at)gidenstam.org)
+##  Copyright (C) 2013 - 2016  Anders Gidenstam  (anders(at)gidenstam.org)
 ##  This file is licensed under the GPL license v2 or later.
 ##
 ###############################################################################
@@ -179,6 +179,7 @@ right.add("/fdm/jsbsim/propulsion/propeller[0]/thrust-lbs");
 right.add("/fdm/jsbsim/propulsion/propeller[0]/advance-ratio");
 right.add("/fdm/jsbsim/ballast/main[0]/content-lbs");
 right.add("/fdm/jsbsim/ballast/main[1]/content-lbs");
+right.add("/fdm/jsbsim/static-condition/net-buoyancy-lbs");
 right.add("/fdm/jsbsim/inertia/pointmass-weight-lbs[6]");
 right.add("/fdm/jsbsim/inertia/pointmass-weight-lbs[7]");
 #right.add("/fdm/jsbsim/");

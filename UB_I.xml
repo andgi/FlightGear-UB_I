@@ -3,7 +3,7 @@
 
   German type UB I submarine "flight" model for JSBSim.
 
-    Copyright (C) 2013 - 2014  Anders Gidenstam  (anders(at)gidenstam.org)
+    Copyright (C) 2013 - 2016  Anders Gidenstam  (anders(at)gidenstam.org)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
   <email>anders at gidenstam dot org</email>
 
   <filecreationdate>2013-07-08</filecreationdate>
-  <version>2014-03-01</version>
+  <version>2016-10-30</version>
 
   <description>Models a German type UB I submarine.</description>
 
@@ -419,6 +419,8 @@
     <yaw>   0.0 </yaw>
    </orient>
    <feed>0</feed>
+   <feed>1</feed>
+   <feed>2</feed>
    <thruster file="prop_UB_I">
     <location unit="M">
      <x>  26.5 </x>
@@ -700,12 +702,24 @@
 
  </system>
 
+ <system name="Tmp Instrumentation">
+
+  <channel name="Static condition">
+
+   <summer name="static-condition/net-buoyancy-lbs">
+    <input>hydro/buoyancy-lbs</input>
+    <input>-inertia/weight-lbs</input>
+   </summer>
+
+  </channel>
+
+ </system>
+
  <system file="hydrodynamics"/>
  <system file="UB_I-hydrodynamics"/>
  <system file="propulsion"/>
  <system file="ballast"/>
 
- <!-- system file="fgfs4jsbsim" -->
  <!-- system file="mooring-jsbsim" -->    <!-- Mooring setup for FlightGear. -->
   <!-- Configuration -->
   <!--  Mooring rope -->

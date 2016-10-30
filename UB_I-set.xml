@@ -2,7 +2,7 @@
 <!--
   German type UB I submarine for FlightGear.
 
-  Copyright (C) 2013 - 2014  Anders Gidenstam  (anders(at)gidenstam.org)
+  Copyright (C) 2013 - 2016  Anders Gidenstam  (anders(at)gidenstam.org)
   This file is licensed under the GPL license version 2 or later.
 -->
 <PropertyList>
@@ -11,7 +11,7 @@
 
   <description>German type UB I submarine.</description>
   <author>Anders Gidenstam</author>
-  <aircraft-version>2014-03-01</aircraft-version>
+  <aircraft-version>2016-10-30</aircraft-version>
 
   <status type="string">alpha</status>
   <rating>

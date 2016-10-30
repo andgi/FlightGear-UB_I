@@ -3,7 +3,7 @@
 
   German type UB I submarine "flight" model for JSBSim.
 
-    Copyright (C) 2013 - 2014  Anders Gidenstam  (anders(at)gidenstam.org)
+    Copyright (C) 2013 - 2016  Anders Gidenstam  (anders(at)gidenstam.org)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -129,22 +129,25 @@
       </tableData>
      </table>
      <pow>
-      <quotient>
-       <product>
-        <value>2.0</value>
-        <property>hydro/hull-drag-lbs</property>
-        <property>hydro/transverse-wave/wave-length-ft</property>
-       </product>
-       <product>
-        <value>3.1415927</value>
-        <property>hydro/environment/rho-slug_ft3</property>
-        <property>hydro/environment/gravity-ft_sec2</property>
-        <max>
-         <value>0.0001</value>
-         <property>hydro/vbx-fps</property>
-        </max>
-       </product>
-      </quotient>
+      <max>
+       <value>0.0</value>
+       <quotient>
+        <product>
+         <value>2.0</value>
+         <property>hydro/hull-drag-lbs</property>
+         <property>hydro/transverse-wave/wave-length-ft</property>
+        </product>
+        <product>
+         <value>3.1415927</value>
+         <property>hydro/environment/rho-slug_ft3</property>
+         <property>hydro/environment/gravity-ft_sec2</property>
+         <max>
+          <value>0.0001</value>
+          <property>hydro/vbx-fps</property>
+         </max>
+        </product>
+       </quotient>
+      </max>
       <value>0.5</value>
      </pow>
     </product>
@@ -168,7 +171,10 @@
          <value>6.2831853</value>
          <property>hydro/hull-length-ft</property>
         </product>
-        <property>hydro/transverse-wave/wave-length-ft</property>
+        <max> <!-- Need to avoid getting 0 here. -->
+         <value>0.00001</value>
+         <property>hydro/transverse-wave/wave-length-ft</property>
+        </max>
        </quotient>
       </sin>
      </product>
@@ -204,7 +210,10 @@
            <value>6.2831853</value>
            <property>hydro/hull-length-ft</property>
           </product>
-          <property>hydro/transverse-wave/wave-length-ft</property>
+          <max> <!-- Need to avoid getting 0 here. -->
+           <value>0.00001</value>
+           <property>hydro/transverse-wave/wave-length-ft</property>
+          </max>
          </quotient>
         </sin>
        </product>
