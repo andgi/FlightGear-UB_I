@@ -3,7 +3,7 @@
 
   German type UB I submarine "flight" model for JSBSim.
 
-    Copyright (C) 2013 - 2014  Anders Gidenstam  (anders(at)gidenstam.org)
+    Copyright (C) 2013 - 2016  Anders Gidenstam  (anders(at)gidenstam.org)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -79,6 +79,8 @@
  </channel>
 
  <!-- The propeller. ========================================================-->
+ <property value="1.00">propulsion/propeller-thrust-factor</property>
+ <property value="0.85">propulsion/propeller-power-factor</property>
 
  <channel name="Propeller">
 
@@ -102,13 +104,13 @@
   <fcs_function name="propulsion/propeller[0]/advance-ratio">
    <function>
     <quotient>
-     <property>hydro/vbx-fps</property>
+     <property>hydro/vbx-fps</property>                 <!-- v [ft/s] -->
      <sum>
       <value>0.000000001</value>
       <product>
-       <value>0.016666667</value>
-       <property>propulsion/propeller[0]/rpm</property>
-       <value>9.0</value>
+       <value>0.016666667</value>                       <!-- 1/min to 1/s -->
+       <property>propulsion/propeller[0]/rpm</property> <!-- n [1/min] -->
+       <value>3.281</value>                             <!-- D [ft] -->
       </product>
      </sum>
     </quotient>
@@ -118,7 +120,7 @@
   <fcs_function name="propulsion/propeller[0]/thrust-coefficient">
    <function>
     <product>
-     <value>1.0</value>
+     <property>propulsion/propeller-thrust-factor</property>
      <table>
       <independentVar lookup="row">propulsion/propeller[0]/advance-ratio</independentVar>
       <tableData>
@@ -152,7 +154,7 @@
   <fcs_function name="propulsion/propeller[0]/power-coefficient">
    <function>
     <product>
-     <value>0.85</value>
+     <property>propulsion/propeller-power-factor</property>
      <table>
       <independentVar lookup="row">propulsion/propeller[0]/advance-ratio</independentVar>
       <tableData>
