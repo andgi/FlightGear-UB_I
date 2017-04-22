@@ -2,7 +2,7 @@
 <!--
   German type UB I submarine for FlightGear.
 
-  Copyright (C) 2013 - 2016  Anders Gidenstam  (anders(at)gidenstam.org)
+  Copyright (C) 2013 - 2017  Anders Gidenstam  (anders(at)gidenstam.org)
   This file is licensed under the GPL license version 2 or later.
 -->
 <PropertyList>
@@ -12,6 +12,18 @@
   <description>German type UB I submarine.</description>
   <author>Anders Gidenstam</author>
   <aircraft-version>2016-10-30</aircraft-version>
+
+  <long-description>
+The type UB I submarines were a class of small coastal submarines built by Germany during the first year of the First World War. The boats were powered by a single 59 hp diesel engine on the surface, making at most about 7 knots, and by a single 118 hp electric engine when submerged, making at most about 5.5 knots. The boats displacement was 127 tonnes on the surface and about 142 tonnes submerged. The boats were single hulled with a length overall of about 28 meters and a hull diameter of 3.15 meters.
+  </long-description>
+
+  <tags>
+   <tag>seacraft</tag>
+   <!-- tag>submarine</tag -->
+   <tag>diesel</tag>
+   <tag>electric</tag>
+   <tag>ww1</tag>
+  </tags>
 
   <status type="string">alpha</status>
   <rating>
