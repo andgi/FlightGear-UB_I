@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+  German type UB I submarine "flight" model for JSBSim.
+
+    Copyright (C) 2016 - 2023  Anders Gidenstam  (anders(at)gidenstam.org)
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+-->
+<system name="crew">
+
+ <documentation>
+  This system provides autopilot components for performing some crew duties,
+  such as the rudder helmsman, the diving rudder helmsman and the engineer.
+ </documentation>
+
+ <!-- Helmsman -->
+ <property value="0.0">crew/helmsman/enabled</property>
+ <property value="0.0">crew/helmsman/heading-magnetic-cmd-deg</property>
+
+ <property value="2.00">crew/helmsman/heading-pid-kp</property>
+ <property value="0.05">crew/helmsman/heading-pid-ki</property>
+ <property value="0.00">crew/helmsman/heading-pid-kd</property>
+
+ <property value="1.00">crew/helmsman/turn-rate-pid-kp</property>
+ <property value="0.20">crew/helmsman/turn-rate-pid-ki</property>
+ <property value="0.00">crew/helmsman/turn-rate-pid-kd</property>
+
+ <property value="5.0">crew/helmsman/max-turn-deg_sec</property>
+
+ <channel name="helmsman">
+
+  <angle name="crew/helmsman/heading-error-deg" unit="DEG">
+   <source_angle unit="DEG">attitude/psi-deg</source_angle>
+   <target_angle unit="DEG">crew/helmsman/heading-magnetic-cmd-deg</target_angle>
+   <clipto>
+    <min>-180.0</min>
+    <max>180.0</max>
+   </clipto>
+  </angle>
+
+  <actuator name="crew/helmsman/heading-actuator-deg_sec">
+   <input>crew/helmsman/heading-pid-deg_sec</input>
+   <!-- lag> number </lag -->
+   <!-- rate_limit> number </rate_limit -->
+   <!-- bias> number </bias -->
+   <!-- deadband_width> number </deadband_width -->
+   <!-- hysteresis_width> number </hysteresis_width -->
+   <clipto>
+    <min>-crew/helmsman/max-turn-deg_sec</min>
+    <max>crew/helmsman/max-turn-deg_sec</max>
+   </clipto>
+  </actuator>
+
+  <pid name="crew/helmsman/heading-pid-deg_sec">
+   <input>crew/helmsman/heading-error-deg</input>
+   <kp>crew/helmsman/heading-pid-kp</kp>
+   <ki>crew/helmsman/heading-pid-ki</ki>
+   <kd>crew/helmsman/heading-pid-kd</kd>
+   <trigger>crew/helmsman/heading-actuator-deg_sec/saturated</trigger>
+  </pid>
+  <fcs_function name="crew/helmsman/turn-rate-cmd-deg_sec">
+   <function>
+    <property>crew/helmsman/heading-actuator-deg_sec</property>
+   </function>
+  </fcs_function>
+
+  <fcs_function name="crew/helmsman/turn-rate-error-deg_sec">
+   <function>
+    <difference>
+     <todegrees>
+      <property>velocities/psidot-rad_sec</property>
+     </todegrees>
+     <property>crew/helmsman/turn-rate-cmd-deg_sec</property>
+    </difference>
+   </function>
+  </fcs_function>
+
+  <actuator name="crew/helmsman/turn-rate-actuator-norm">
+   <input>crew/helmsman/turn-rate-pid-norm</input>
+   <!-- lag> number </lag -->
+   <!-- rate_limit> number </rate_limit -->
+   <!-- bias> number </bias -->
+   <!-- deadband_width> number </deadband_width -->
+   <!-- hysteresis_width> number </hysteresis_width -->
+   <clipto>
+    <min>-1.0</min>
+    <max> 1.0</max>
+   </clipto>
+  </actuator>
+
+  <pid name="crew/helmsman/turn-rate-pid-norm">
+   <input>crew/helmsman/turn-rate-error-deg_sec</input>
+   <kp>crew/helmsman/turn-rate-pid-kp</kp>
+   <ki>crew/helmsman/turn-rate-pid-ki</ki>
+   <kd>crew/helmsman/turn-rate-pid-kd</kd>
+   <trigger>crew/helmsman/turn-rate-actuator-norm/saturated</trigger>
+  </pid>
+  <fcs_function name="crew/helmsman/suggested-rudder-cmd-norm">
+   <function>
+    <property>crew/helmsman/turn-rate-actuator-norm</property>
+   </function>
+  </fcs_function>
+
+  <switch name="crew/helmsman/rudder-cmd-norm">
+   <default value="0.0"/>
+   <test value="crew/helmsman/suggested-rudder-cmd-norm">
+    crew/helmsman/enabled GT 0.5
+   </test>
+  </switch>
+
+ </channel>
+
+ <!-- Diving rudder/hydroplane helmsman -->
+ <property value="0.0">crew/hydroplaneman/enabled</property>
+ <property value="0.0">crew/hydroplaneman/depth-cmd-ft</property>
+ <!-- property value="0.0">crew/hydroplaneman/pitch-cmd-deg</property -->
+
+ <property value="-0.500">crew/hydroplaneman/depth-pid-kp</property>
+ <property value="-0.001">crew/hydroplaneman/depth-pid-ki</property>
+ <property value="0.00">crew/hydroplaneman/depth-pid-kd</property>
+
+ <property value="2.00">crew/hydroplaneman/pitch-pid-kp</property>
+ <property value="0.60">crew/hydroplaneman/pitch-pid-ki</property>
+ <property value="0.00">crew/hydroplaneman/pitch-pid-kd</property>
+
+ <property value="10.0">crew/hydroplaneman/max-pitch-deg</property>
+
+ <channel name="hydroplaneman">
+
+  <fcs_function name="crew/hydroplaneman/depth-error-ft">
+   <function>
+    <sum>
+     <property>hydro/hull/height-agl-ft</property>
+     <property>crew/hydroplaneman/depth-cmd-ft</property>
+    </sum>
+   </function>
+  </fcs_function>
+
+  <actuator name="crew/hydroplaneman/depth-actuator-deg">
+   <input>crew/hydroplaneman/depth-pid-deg</input>
+   <!-- lag> number </lag -->
+   <!-- rate_limit> number </rate_limit -->
+   <!-- bias> number </bias -->
+   <!-- deadband_width> number </deadband_width -->
+   <!-- hysteresis_width> number </hysteresis_width -->
+   <clipto>
+    <min>-crew/hydroplaneman/max-pitch-deg</min>
+    <max>crew/hydroplaneman/max-pitch-deg</max>
+   </clipto>
+  </actuator>
+
+  <pid name="crew/hydroplaneman/depth-pid-deg">
+   <input>crew/hydroplaneman/depth-error-ft</input>
+   <kp>crew/hydroplaneman/depth-pid-kp</kp>
+   <ki>crew/hydroplaneman/depth-pid-ki</ki>
+   <kd>crew/hydroplaneman/depth-pid-kd</kd>
+   <trigger>crew/hydroplaneman/depth-actuator-deg/saturated</trigger>
+  </pid>
+  <fcs_function name="crew/hydroplaneman/pitch-cmd-deg">
+   <function>
+    <property>crew/hydroplaneman/depth-actuator-deg</property>
+   </function>
+  </fcs_function>
+
+  <angle name="crew/hydroplaneman/pitch-error-deg" unit="DEG">
+   <source_angle unit="DEG">crew/hydroplaneman/pitch-cmd-deg</source_angle>
+   <target_angle unit="DEG">attitude/theta-deg</target_angle>
+   <clipto>
+    <min>-180.0</min>
+    <max>180.0</max>
+   </clipto>
+  </angle>
+
+  <actuator name="crew/hydroplaneman/pitch-actuator-norm">
+   <input>crew/hydroplaneman/pitch-pid-norm</input>
+   <!-- lag> number </lag -->
+   <!-- rate_limit> number </rate_limit -->
+   <!-- bias> number </bias -->
+   <!-- deadband_width> number </deadband_width -->
+   <!-- hysteresis_width> number </hysteresis_width -->
+   <clipto>
+    <min>-1.0</min>
+    <max>1.0</max>
+   </clipto>
+  </actuator>
+
+  <pid name="crew/hydroplaneman/pitch-pid-norm">
+   <input>crew/hydroplaneman/pitch-error-deg</input>
+   <kp>crew/hydroplaneman/pitch-pid-kp</kp>
+   <ki>crew/hydroplaneman/pitch-pid-ki</ki>
+   <kd>crew/hydroplaneman/pitch-pid-kd</kd>
+   <trigger>crew/hydroplaneman/pitch-actuator-norm/saturated</trigger>
+  </pid>
+  <fcs_function name="crew/hydroplaneman/suggested-diving-rudder-cmd-norm">
+   <function>
+    <property>crew/hydroplaneman/pitch-actuator-norm</property>
+   </function>
+  </fcs_function>
+
+  <switch name="crew/hydroplaneman/diving-rudder-cmd-norm">
+   <default value="0.0"/>
+   <test value="crew/hydroplaneman/suggested-diving-rudder-cmd-norm">
+    crew/hydroplaneman/enabled GT 0.5
+   </test>
+  </switch>
+
+ </channel>
+
+ <!-- Engine man -->
+ <property value="0.0">crew/engineman/enabled</property>
+ <property value="0.0">crew/engineman/throttle-cmd-rpm</property>
+
+ <property value="0.00">crew/engineman/throttle-pid-kp</property>
+ <property value="-0.2">crew/engineman/throttle-pid-ki</property>
+ <property value="0.00">crew/engineman/throttle-pid-kd</property>
+
+ <property value="700.0">crew/engineman/max-throttle-rpm</property>
+
+ <channel name="engineman">
+
+  <fcs_function name="crew/engineman/error-rpm">
+   <function>
+    <sum>
+     <property>propulsion/engine/engine-rpm</property>
+     <property>-crew/engineman/throttle-cmd-rpm</property>
+    </sum>
+   </function>
+  </fcs_function>
+
+  <pid name="crew/engineman/throttle-pid-rpm">
+   <input>crew/engineman/error-rpm</input>
+   <kp>crew/engineman/throttle-pid-kp</kp>
+   <ki>crew/engineman/throttle-pid-ki</ki>
+   <kd>crew/engineman/throttle-pid-kd</kd>
+   <trigger>crew/engineman/throttle-actuator-rpm/saturated</trigger>
+  </pid>
+
+  <actuator name="crew/engineman/throttle-actuator-rpm">
+   <input>crew/engineman/throttle-pid-rpm</input>
+   <!-- lag> number </lag -->
+   <!-- rate_limit> number </rate_limit -->
+   <!-- bias> number </bias -->
+   <!-- deadband_width> number </deadband_width -->
+   <!-- hysteresis_width> number </hysteresis_width -->
+   <clipto>
+    <min>0.0</min>
+    <max>crew/engineman/max-throttle-rpm</max>
+   </clipto>
+  </actuator>
+
+  <fcs_function name="crew/engineman/suggested-throttle-cmd-norm">
+   <function>
+    <quotient>
+     <property>crew/engineman/throttle-actuator-rpm</property>
+     <property>crew/engineman/max-throttle-rpm</property>
+    </quotient>
+   </function>
+  </fcs_function>
+
+  <switch name="crew/engineman/throttle-cmd-norm">
+   <default value="0.0"/>
+   <test value="crew/engineman/suggested-throttle-cmd-norm">
+    crew/engineman/enabled GT 0.5
+   </test>
+  </switch>
+
+ </channel>
+
+</system>

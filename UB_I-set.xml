@@ -369,11 +369,22 @@ The type UB I submarines were a class of small coastal submarines built by Germa
 
  <fdm>
   <jsbsim>
+   <crew>
+    <helmsman>
+     <heading-magnetic-cmd-deg type="double">90.0</heading-magnetic-cmd-deg>
+    </helmsman>
+   </crew>
    <fcs>
     <clutch-cmd-norm n="0" type="double">1.0</clutch-cmd-norm>
     <reverse-cmd-norm n="0" type="double">0.0</reverse-cmd-norm>
    </fcs>
   </jsbsim>
  </fdm>
+
+ <autopilot>
+  <settings>
+   <heading-bug-deg alias="/fdm/jsbsim/crew/helmsman/heading-magnetic-cmd-deg"/>
+  </settings>
+ </autopilot>
 
 </PropertyList>

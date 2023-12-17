@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<initialize name="reset01">
+  <!--
+    This file sets up the submarine to cruise at 5kt indicated at 0 ft depth.
+  -->
+  <ubody unit="KTS">       5.0   </ubody>
+  <vbody unit="FT/SEC">    0.0   </vbody>
+  <wbody unit="FT/SEC">    0.0   </wbody>
+  <latitude unit="DEG">    0.0  </latitude>
+  <longitude unit="DEG">   0.0  </longitude>
+  <phi unit="DEG">         0.0   </phi>
+  <theta unit="DEG">       0.0   </theta>
+  <psi unit="DEG">         0.0   </psi>
+  <altitude unit="FT">     0.0   </altitude>
+</initialize>

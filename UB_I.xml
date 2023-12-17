@@ -3,7 +3,7 @@
 
   German type UB I submarine "flight" model for JSBSim.
 
-    Copyright (C) 2013 - 2016  Anders Gidenstam  (anders(at)gidenstam.org)
+    Copyright (C) 2013 - 2023  Anders Gidenstam  (anders(at)gidenstam.org)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
   
 -->
 <?xml-stylesheet type="text/xsl" href="http://jsbsim.sourceforge.net/JSBSim.xsl"?>
-<fdm_config name="MTB_20m" version="2.0" release="ALPHA"
+<fdm_config name="UB_I" version="2.0" release="ALPHA"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:noNamespaceSchemaLocation="http://jsbsim.sourceforge.net/JSBSim.xsd">
 
@@ -30,13 +30,13 @@
   <email>anders at gidenstam dot org</email>
 
   <filecreationdate>2013-07-08</filecreationdate>
-  <version>2016-10-30</version>
+  <version>2023-12-17</version>
 
   <description>Models a German type UB I submarine.</description>
 
   <license>
-   <licenseName>GPL</licenseName>
-   <licenseURL>http://www.gnu.org/licenses/gpl.html</licenseURL>
+   <licenseName>GPL v2+</licenseName>
+   <licenseURL>http://www.gnu.org/licenses/old-licenses/gpl-2.0.html</licenseURL>
   </license>
   <note>
    This model was created using publicly available data, publicly available
@@ -164,9 +164,9 @@
     Ixz = Ixz_hull
     Iyz = Iyz_hull
   </documentation>
-  <ixx unit="KG*M2">9.9540e+04</ixx>
-  <iyy unit="KG*M2">3.5876e+06</iyy>
-  <izz unit="KG*M2">3.5876e+06</izz>
+  <ixx unit="KG*M2">99540</ixx>
+  <iyy unit="KG*M2">3587600</iyy>
+  <izz unit="KG*M2">3587600</izz>
   <!-- emptywt unit="KG">80254</emptywt -->
   <emptywt unit="KG">73800</emptywt>
   <location name="CG" unit="M">
@@ -180,7 +180,16 @@
   </documentation>
 
   <pointmass name="Port torpedo">
-   <!-- 773 kg for torpedo C/06 AV, 810 kg for torpedo C/06 D -->
+   <!-- From [7]:
+        773 kg for torpedo C/06 AV, 810 kg for torpedo C/06 D
+        Dimensions: 0.45 m diameter, 5.650 m length.
+        Warhead: 270 lbs. TNT
+        Speed/range: C/06: 1,640 yards (1,500 m) / 34.5 knots
+                           3,380 yards (3,000 m) / 26 knots
+                     C/06 D:
+                           1,640 yards (1,500 m) / 34.5 knots
+                           5,470 yards (5,000 m) / 27 knots
+   -->
    <weight unit="KG"> 773.0 </weight>
    <location unit="M">
     <x> 5.50</x>
@@ -189,7 +198,7 @@
    </location>
   </pointmass>
   <pointmass name="Starboard torpedo">
-   <!-- 773 kg for torpedo C/06 AV, 810 kg for torpedo C/06 D -->
+   <!-- See above. -->
    <weight unit="KG"> 773.0 </weight>
    <location unit="M">
     <x> 5.50</x>
@@ -349,6 +358,7 @@
  <ground_reactions>
   <documentation>
    The hydrostatic interactions of the hull are modelled by external forces.
+   Comment out these ground reactions in JSBSim/standalone.
   </documentation>
 
   <contact type="STRUCTURE" name="BOW">
@@ -408,16 +418,6 @@
   -->
   <!-- Diesel engine -->
   <engine file="eng_Korting60bhp">
-   <location unit="M">
-    <x>  19.0 </x>
-    <y>   0.0 </y>
-    <z>   0.0 </z>
-   </location>
-   <orient unit="DEG">
-    <roll>  0.0 </roll>
-    <pitch> 0.0 </pitch>
-    <yaw>   0.0 </yaw>
-   </orient>
    <feed>0</feed>
    <feed>1</feed>
    <feed>2</feed>
@@ -438,9 +438,6 @@
   <!--
   === Fuel tanks ============================================
   -->
-  <documentation>
-  </documentation>
-
   <tank type="FUEL">
    <location unit="M">
     <x> 18.5</x>
@@ -514,80 +511,27 @@
    </direction>
   </force>
 
-  <force name="hydro-pitch[0]" frame="LOCAL" unit="LBS">
-   <location unit="M">
-    <x>  13.6952 </x>
-    <y>   0.00 </y>
-    <z>   1.00 </z>
-   </location>
+  <moment name="hydro-pitch" frame="BODY" unit="LBSFT">
    <direction>
     <x> 0.0 </x>
-    <y> 0.0 </y>
-    <z>-1.0 </z>
+    <y> 1.0 </y>
+    <z> 0.0 </z>
    </direction>
-  </force>
-  <force name="hydro-pitch[1]" frame="LOCAL" unit="LBS">
-   <location unit="M">
-    <x>  14.3048 </x>
-    <y>   0.00 </y>
-    <z>   1.00 </z>
-   </location>
-   <direction>
-    <x> 0.0 </x>
-    <y> 0.0 </y>
-    <z>-1.0 </z>
-   </direction>
-  </force>
-
-  <force name="hydro-roll[0]" frame="LOCAL" unit="LBS">
-   <location unit="M">
-    <x>  14.00 </x>
-    <y>  -0.3048 </y>
-    <z>   1.00 </z>
-   </location>
-   <direction>
-    <x> 0.0 </x>
-    <y> 0.0 </y>
-    <z>-1.0 </z>
-   </direction>
-  </force>
-  <force name="hydro-roll[1]" frame="LOCAL" unit="LBS">
-   <location unit="M">
-    <x>  14.00 </x>
-    <y>   0.3048 </y>
-    <z>   1.00 </z>
-   </location>
-   <direction>
-    <x> 0.0 </x>
-    <y> 0.0 </y>
-    <z>-1.0 </z>
-   </direction>
-  </force>
-
-  <force name="hydro-yaw[0]" frame="BODY" unit="LBS">
-   <location unit="M">
-    <x>  14.00 </x>
-    <y>  -0.3048 </y>
-    <z>   1.00 </z>
-   </location>
+  </moment>
+  <moment name="hydro-roll" frame="BODY" unit="LBSFT">
    <direction>
     <x> 1.0 </x>
     <y> 0.0 </y>
     <z> 0.0 </z>
    </direction>
-  </force>
-  <force name="hydro-yaw[1]" frame="BODY" unit="LBS">
-   <location unit="M">
-    <x>  14.00 </x>
-    <y>   0.3048 </y>
-    <z>   1.00 </z>
-   </location>
+  </moment>
+  <moment name="hydro-yaw" frame="BODY" unit="LBSFT">
    <direction>
-    <x> 1.0 </x>
+    <x> 0.0 </x>
     <y> 0.0 </y>
-    <z> 0.0 </z>
+    <z> 1.0 </z>
    </direction>
-  </force>
+  </moment>
 
   <force name="propeller[0]" frame="BODY" unit="LBS">
    <location unit="M">
@@ -633,9 +577,9 @@
      <z> 0.0 </z>
    </location>
    <direction>
-    <x> 1.0 </x>
+    <x> 0.0 </x>
     <y> 0.0 </y>
-    <z> 0.0 </z>
+    <z> 1.0 </z>
    </direction>
   </force>
 
@@ -648,6 +592,7 @@
    <summer name="fcs/rudder/pos-norm">
     <input>fcs/rudder-cmd-norm</input>
     <input>-fcs/aileron-cmd-norm</input>
+    <input>crew/helmsman/rudder-cmd-norm</input>
     <clipto>
      <min>-1</min>
      <max> 1</max>
@@ -676,6 +621,7 @@
 
    <summer name="fcs/diving-rudder/pos-norm">
     <input>fcs/elevator-cmd-norm</input>
+    <input>crew/hydroplaneman/diving-rudder-cmd-norm</input>
     <clipto>
      <min>-1</min>
      <max> 1</max>
@@ -700,6 +646,20 @@
 
   </channel>
 
+  <channel name="Throttle">
+
+   <summer name="fcs/throttle/pos-norm">
+    <input>fcs/throttle-cmd-norm</input>
+    <input>crew/engineman/throttle-cmd-norm</input>
+    <clipto>
+     <min>-1</min>
+     <max> 1</max>
+    </clipto>
+    <output>fcs/throttle-pos-norm</output>
+   </summer>
+
+  </channel>
+
  </system>
 
  <system name="Tmp Instrumentation">
@@ -719,6 +679,8 @@
  <system file="UB_I-hydrodynamics"/>
  <system file="propulsion"/>
  <system file="ballast"/>
+
+ <system file="crew-jsbsim"/>
 
  <!-- system file="mooring-jsbsim" -->    <!-- Mooring setup for FlightGear. -->
   <!-- Configuration -->

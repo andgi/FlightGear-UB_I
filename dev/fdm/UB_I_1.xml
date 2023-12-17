@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="http://www.jsbsim.org/JSBSimScript.xsl"?>
+<runscript xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://jsbsim.sf.net/JSBSimScript.xsd"
+           name="UB I surface test">
+ <description>This is a surface run for the UB I submarine.</description>
+
+ <use aircraft="UB_I" initialize="dev/fdm/reset01"/>
+ <run start="0.0" end="240" dt="0.0010416667">
+
+  <property value="0"> simulation/notify-time-trigger </property>
+
+  <event name="Engine start 1">
+   <description>Start the engine</description>
+   <condition>
+    simulation/sim-time-sec GE 10.0
+   </condition>
+   <notify/>
+   <set name="fcs/advance-cmd-norm[0]"  value="0.0"/>
+   <set name="fcs/throttle-cmd-norm[0]" value="1.0"/>
+   <set name="fcs/mixture-cmd-norm[0]"  value="1.0"/>
+   <set name="propulsion/magneto_cmd"   value="3"/>
+   <set name="propulsion/starter_cmd"   value="1"/>
+  </event>
+
+  <event name="Engine start 2">
+   <description>The engine has started</description>
+   <condition>
+    propulsion/engine[0]/engine-rpm GE 400
+   </condition>
+   <notify>
+    <property>hydro/v-kt</property>
+    <property>propulsion/engine[0]/engine-rpm</property>
+    <property>propulsion/engine[0]/power-hp</property>
+   </notify>
+   <set name="propulsion/starter_cmd"   value="0"/>
+   <set name="fcs/throttle-cmd-norm[0]" value="0.10"/>
+   <set name="fcs/clutch-cmd-norm[0]"   value="1.0"/>
+   <set name="fcs/clutch-cmd-norm[1]"   value="1.0"/>
+   <set name="crew/engineman/enabled"            value="1.0"/>
+   <set name="crew/engineman/throttle-cmd-rpm"   value="400"/>
+  </event>
+
+  <event name="Enable hydroplane man">
+   <description>Enable hydroplane man</description>
+   <condition>
+    simulation/sim-time-sec GE 120.0
+   </condition>
+   <notify>
+    <property>hydro/v-kt</property>
+    <property>propulsion/engine[0]/engine-rpm</property>
+    <property>propulsion/engine[0]/power-hp</property>
+   </notify>
+   <set name="crew/hydroplaneman/enabled"      value="1.0"/>
+   <set name="crew/hydroplaneman/depth-cmd-ft" value="0.0"/>
+  </event>
+
+  <event name="Time Notify" persistent="true">
+   <description>Output message at 5 seconds intervals</description>
+   <condition>
+    simulation/sim-time-sec GE simulation/notify-time-trigger
+   </condition>
+   <notify>
+    <property>position/distance-from-start-mag-mt</property>
+    <property>hydro/height-agl-ft</property>
+    <property>hydro/true-course-deg</property>
+    <property>hydro/v-kt</property>
+    <property>hydro/pitch-deg</property>
+    <property>hydro/roll-deg</property>
+    <property>hydro/beta-deg</property>
+    <property>propulsion/engine[0]/engine-rpm</property>
+    <property>propulsion/engine[0]/power-hp</property>
+    <property>crew/helmsman/enabled</property>
+    <property>crew/helmsman/heading-magnetic-cmd-deg</property>
+    <property>fcs/rudder-pos-norm</property>
+    <property>crew/hydroplaneman/enabled</property>
+    <property>crew/hydroplaneman/depth-cmd-ft</property>
+    <property>fcs/diving-rudder/pos-norm</property>
+    <property>crew/engineman/enabled</property>
+    <property>crew/engineman/throttle-cmd-rpm</property>
+    <property>hydro/X/force-lbs</property>
+    <property>hydro/Y/force-lbs</property>
+    <property>hydro/Z/force-lbs</property>
+    <property>hydro/buoyancy-lbs</property>
+   </notify>
+   <set name="simulation/notify-time-trigger" value="5" type="FG_DELTA"/>
+  </event>
+
+ </run>
+</runscript>
